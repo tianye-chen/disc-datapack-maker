@@ -3,6 +3,8 @@
 @theme{
   --color-primary-text: rgba(255, 255, 255, 1);
 
+  --color-primary: rgba(100, 100, 255);
+
   --color-upload-bg: rgba(77, 77, 77 ,1);
   --color-card-bg: rgba(64, 64, 64, 1);
 
