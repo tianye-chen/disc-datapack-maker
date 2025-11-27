@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react"
 import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
+import { UploadBox } from "../Components/UploadBox"
 
 export const DiscPackMaker = () => {
     const [selectedVersion, setSelectedVersion] = useState(1.21)
-    const [customDiscs, setCustomDiscs] = useState([0])
-    const datapackVersion = [1.21, 1.22, 1.23, 1.24, 1.25]
+    const [packImage, setPackImage] = useState(null)
+    const [customDiscs, setCustomDiscs] = useState([{
+            title: "Disc Title",
+            author: "Author"
+        }])
+    const datapackVersion = ["1.21 - 1.12.1", "1.20.5 - 1.20.6", "1.20.2 - 1.20.4", "1.20 - 1.20.1", "1.19.3 - 1.19.4", "1.19 - 1.19.2"]
 
     const addNewItem = () => {
-        setCustomDiscs(prev => [...prev, prev[prev.length-1]+1])
+        const newItem = {
+            title: "Disc Title",
+            author: "Author"
+        }
+
+        setCustomDiscs(prev => [...prev, newItem])
     }
 
     const removeItem = (index) => {
         setCustomDiscs(prev => prev.filter((v, i) => (i != index)))
     }
+
+    const handlePackImageUpload = (file) => {
+        setPackImage(file)
+    }
+
+    const handleDiscImageUpload = (file, index) => {
+        const newDiscs = [...customDiscs]
+        newDiscs[index].image = file
+        setCustomDiscs(newDiscs)
+    }
+
 
     return (
         <div class='text-primary-text min-w-screen'>
@@ -31,10 +52,11 @@ export const DiscPackMaker = () => {
 
                     {/** Title and pack image */}
                     <div class="flex min-h-64 justify-center items-start">
-                        <div class="bg-upload-bg aspect-square max-w-sm min-w-sm border-4 border-dashed border-[#ffffff55] mr-4 rounded-2xl">
-                            <div class="flex items-center justify-center min-h-full">
-                                Upload Pack Image
-                            </div>
+                        <div class={`bg-upload-bg aspect-square max-w-sm min-w-sm mr-4 rounded-2xl`}>
+                            <UploadBox 
+                                onFileUpload={handlePackImageUpload}
+                                uploadMessage={"Upload Pack Image"}
+                            />
                         </div>
                         <div>
                             <div class="font-bold text-6xl mb-4">Data pack title</div>
@@ -54,6 +76,7 @@ export const DiscPackMaker = () => {
                                     item={selectedVersion}
                                     setSelectedItem={setSelectedVersion}
                                     list={datapackVersion}
+                                    handleDiscImageUpload={handleDiscImageUpload}
                             />
                         </div>
                     </div>
@@ -68,7 +91,7 @@ export const DiscPackMaker = () => {
                         ))}
                     </div>
 
-                    <div class="flex justify-end w-full">
+                    <div class="flex justify-end items-end w-full">
                         <div class="bg-primary px-4 py-2.5 my-4 rounded-full cursor-pointer">
                             Create Pack    
                         </div>                     

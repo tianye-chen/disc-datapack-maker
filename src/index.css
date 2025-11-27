@@ -6,9 +6,13 @@
   --color-primary: rgba(100, 100, 255);
 
   --color-upload-bg: rgba(77, 77, 77 ,1);
+  --color-outline: rgba(255, 255, 255, 1);
   --color-card-bg: rgba(64, 64, 64, 1);
 
-  --color-background: rgba(55, 55, 55, 1)
+  --color-background: rgba(55, 55, 55, 1);
+
+  --color-bad: rgba(255, 50, 50, 1);
+  --color-bad-hover: rgba(255, 100, 100, 1);
 }
 
 
