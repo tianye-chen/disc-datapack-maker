@@ -1,6 +1,12 @@
 import { UploadBox } from "./UploadBox";
+import { useState } from "react";
 
 export const DiscItem = (props) => {
+  const [recipeIsShapeless, setRecipeIsShapeless] = useState(false);
+  const [recipe, setRecipe] = useState(["", "minecraft:iron_ingot", "", 
+                                        "minecraft:iron_ingot", "minecraft:diamond", "minecraft:iron_ingot", 
+                                        "", "minecraft:iron_ingot", ""]);
+
   return (
     <div class="flew-row flex w-full justify-between gap-4 rounded-xl bg-card-bg p-4">
       <div class="flex flex-row gap-12">
@@ -37,14 +43,29 @@ export const DiscItem = (props) => {
         </div>
 
         <div class="relative h-min w-full">
-          Recipe
+          <div class="flex flex-row w-max gap-16">
+            Recipe
+            <label class="cursor-pointer select-none">
+              <input
+                type="checkbox"
+                class="mr-2"
+                onChange={(e) => setRecipeIsShapeless(e.target.checked)}
+              />
+              Shapeless
+            </label>
+          </div>
           <div class="absolute top-6 grid h-fit w-full grid-cols-3 grid-rows-3 gap-x-26 gap-y-2">
-            {[...Array(9)].map((_, i) => (
+            {recipe.map((item, i) => (
               <div class="group grid h-8 w-24 place-items-center overflow-hidden rounded-lg border-[#ffffff55] bg-upload-bg px-2 text-xs outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:z-10 focus-within:w-48 focus-within:outline-white">
                 <input
-                  class="outline-none"
+                  class="outline-none w-full"
                   text="text"
-                  placeholder="minecraft:diamond"
+                  placeholder={item}
+                  onChange={(e) => {
+                    let newRecipe = [...recipe];
+                    newRecipe[i] = e.target.value;
+                    setRecipe(newRecipe);
+                  }}
                 />
               </div>
             ))}
