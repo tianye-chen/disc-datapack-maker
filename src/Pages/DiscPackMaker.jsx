@@ -5,7 +5,6 @@ import { UploadBox } from "../Components/UploadBox"
 
 export const DiscPackMaker = () => {
     const [selectedVersion, setSelectedVersion] = useState(1.21)
-    const [packImage, setPackImage] = useState(null)
     const [customDiscs, setCustomDiscs] = useState([{
             title: "Disc Title",
             author: "Author"
@@ -23,10 +22,6 @@ export const DiscPackMaker = () => {
 
     const removeItem = (index) => {
         setCustomDiscs(prev => prev.filter((v, i) => (i != index)))
-    }
-
-    const handlePackImageUpload = (file) => {
-        setPackImage(file)
     }
 
     const handleDiscImageUpload = (file, index) => {
@@ -54,8 +49,8 @@ export const DiscPackMaker = () => {
                     <div class="flex min-h-64 justify-center items-start">
                         <div class={`bg-upload-bg aspect-square max-w-sm min-w-sm mr-4 rounded-2xl`}>
                             <UploadBox 
-                                onFileUpload={handlePackImageUpload}
                                 uploadMessage={"Upload Pack Image"}
+                                size="big"
                             />
                         </div>
                         <div>

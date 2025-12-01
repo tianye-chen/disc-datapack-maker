@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { DiscPackMaker } from './Pages/DiscPackMaker'
-import './App.css'
+import { useState } from "react";
+import { DiscPackMaker } from "./Pages/DiscPackMaker";
+import "./App.css";
 
 function App() {
   return (
     <>
-      <DiscPackMaker/>
+      <DiscPackMaker />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

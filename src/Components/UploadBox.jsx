@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-export const UploadBox = ({ onFileUpload, uploadMessage }) => {
+export const UploadBox = ({ uploadMessage, size }) => {
   const fileInput = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const [file, setFile] = useState(null);
@@ -22,7 +22,7 @@ export const UploadBox = ({ onFileUpload, uploadMessage }) => {
     e.preventDefault();
 
     // Lifts the file state up to the parent component
-    selfHandleFileUpload(e.dataTransfer.files[0]);
+    handleFiles(e.dataTransfer.files[0]);
     setDragOver(false);
   };
 
@@ -31,13 +31,12 @@ export const UploadBox = ({ onFileUpload, uploadMessage }) => {
     e.preventDefault();
 
     // Lifts the file state up to the parent component
-    selfHandleFileUpload(e.target.files[0]);
+    handleFiles(e.target.files[0]);
   };
 
-  const selfHandleFileUpload = (file) => {
+  const handleFiles = (file) => {
     setFile(file);
-    onFileUpload(file);
-};
+  };
 
   // Triggers handleFileSelect when user clicks on the upload box
   const triggerFileSelect = () => {
@@ -47,7 +46,7 @@ export const UploadBox = ({ onFileUpload, uploadMessage }) => {
   return (
     <div
     class={`relative flex h-full w-full flex-col items-center justify-center 
-            rounded-2xl outline-2 group 
+            rounded-2xl outline-2 group aspect-square
             ${file ? "outline-transparent" : "outline-dashed outline-[#ffffff55]"} 
             transition-all ease-in-out hover:cursor-pointer`}
     onDragOver={handleDragOver}
@@ -72,7 +71,7 @@ export const UploadBox = ({ onFileUpload, uploadMessage }) => {
     )}
 
     {/* Text overlay */}
-    <h1 class={`select-none text-2xl font-bold text-white z-20 opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}>
+    <h1 class={`select-none ${size == "big" ? "text-2xl" : "text-xs"} font-bold text-white z-20 opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}>
         {uploadMessage}
     </h1>
 
