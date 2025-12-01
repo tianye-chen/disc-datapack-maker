@@ -45,7 +45,7 @@ export const UploadBox = ({ uploadMessage, size }) => {
 
   return (
     <div
-      class={`group relative flex aspect-square h-full w-full flex-col items-center justify-center rounded-2xl outline-2 ${file ? "outline-transparent" : "outline-[#ffffff55] outline-dashed"} transition-all ease-in-out hover:cursor-pointer`}
+      class={`group relative flex aspect-square h-full w-full flex-col items-center justify-center rounded-2xl outline-2 ${file ? "outline-transparent" : "outline-upload-border outline-dashed"} transition-all ease-in-out hover:cursor-pointer`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -53,7 +53,7 @@ export const UploadBox = ({ uploadMessage, size }) => {
     >
       {/* Hover overlay */}
       <div
-        class={`absolute inset-0 rounded-2xl transition-all ${dragOver ? "bg-[#00000055]" : "group-hover:bg-[#00000055] group-active:bg-[#0000055]"} z-10`}
+        class={`absolute inset-0 rounded-2xl transition-all ${dragOver ? "bg-upload-hover" : "group-hover:bg-upload-hover group-active:bg-upload-hover"} z-10`}
       ></div>
 
       {/* Preview image */}
@@ -66,7 +66,7 @@ export const UploadBox = ({ uploadMessage, size }) => {
 
       {/* Text overlay */}
       <h1
-        class={`select-none ${size == "big" ? "text-2xl" : "text-xs"} z-20 font-bold text-white opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}
+        class={`select-none ${size == "big" ? "text-2xl" : "text-xs"} z-20 font-bold text-primary-text opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}
       >
         {uploadMessage}
       </h1>

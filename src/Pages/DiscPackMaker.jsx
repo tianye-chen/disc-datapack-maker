@@ -5,16 +5,17 @@ import { UploadBox } from "../Components/UploadBox"
 
 export const DiscPackMaker = () => {
     const [selectedVersion, setSelectedVersion] = useState(1.21)
-    const [customDiscs, setCustomDiscs] = useState([{
-            title: "Disc Title",
-            author: "Author"
-        }])
+    const [customDiscs, setCustomDiscs] = useState([])
     const datapackVersion = ["1.21 - 1.12.1", "1.20.5 - 1.20.6", "1.20.2 - 1.20.4", "1.20 - 1.20.1", "1.19.3 - 1.19.4", "1.19 - 1.19.2"]
 
     const addNewItem = () => {
         const newItem = {
-            title: "Disc Title",
-            author: "Author"
+            _id: crypto.randomUUID(),
+            image: null,
+            track: null,
+            title: "",
+            author: "",
+            recipe: ["", "minecraft:iron_ingot", "", "minecraft:iron_ingot", "minecraft:diamond", "minecraft:iron_ingot", "", "minecraft:iron_ingot", ""],
         }
 
         setCustomDiscs(prev => [...prev, newItem])
