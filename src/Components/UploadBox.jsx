@@ -45,43 +45,39 @@ export const UploadBox = ({ uploadMessage, size }) => {
 
   return (
     <div
-    class={`relative flex h-full w-full flex-col items-center justify-center 
-            rounded-2xl outline-2 group aspect-square
-            ${file ? "outline-transparent" : "outline-dashed outline-[#ffffff55]"} 
-            transition-all ease-in-out hover:cursor-pointer`}
-    onDragOver={handleDragOver}
-    onDragLeave={handleDragLeave}
-    onDrop={handleDrop}
-    onClick={triggerFileSelect}
+      class={`group relative flex aspect-square h-full w-full flex-col items-center justify-center rounded-2xl outline-2 ${file ? "outline-transparent" : "outline-[#ffffff55] outline-dashed"} transition-all ease-in-out hover:cursor-pointer`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={triggerFileSelect}
     >
+      {/* Hover overlay */}
+      <div
+        class={`absolute inset-0 rounded-2xl transition-all ${dragOver ? "bg-[#00000055]" : "group-hover:bg-[#00000055] group-active:bg-[#0000055]"} z-10`}
+      ></div>
 
-    {/* Hover overlay */}
-    <div
-        class={`absolute inset-0 rounded-2xl transition-all 
-                ${dragOver ? "bg-[#00000055]" : "group-hover:bg-[#00000055] group-active:bg-[#0000055]"} 
-                z-10`}
-    ></div>
-
-    {/* Preview image */}
-    {file && (
+      {/* Preview image */}
+      {file && (
         <img
-        src={URL.createObjectURL(file)}
-        class="absolute max-h-full max-w-full rounded-2xl z-0"
+          src={URL.createObjectURL(file)}
+          class="absolute z-0 max-h-full max-w-full rounded-2xl"
         />
-    )}
+      )}
 
-    {/* Text overlay */}
-    <h1 class={`select-none ${size == "big" ? "text-2xl" : "text-xs"} font-bold text-white z-20 opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}>
+      {/* Text overlay */}
+      <h1
+        class={`select-none ${size == "big" ? "text-2xl" : "text-xs"} z-20 font-bold text-white opacity-0 ${!file || dragOver ? "opacity-100" : "group-hover:opacity-100"} transition-all ease-in-out`}
+      >
         {uploadMessage}
-    </h1>
+      </h1>
 
-    {/* Hidden input */}
-    <input
+      {/* Hidden input */}
+      <input
         ref={fileInput}
         type="file"
         onChange={handleFileSelect}
         class="hidden"
-    />
+      />
     </div>
   );
 };
