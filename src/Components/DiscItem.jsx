@@ -1,9 +1,11 @@
 import { UploadBox } from "./UploadBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const DiscItem = (props) => {
+export const DiscItem = ({id, signal, onCollect, onRemove}) => {
   const [recipeIsShapeless, setRecipeIsShapeless] = useState(false);
-  const [recipe, setRecipe] = useState([
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [recipe, setRecipe] = useState([ 
     "",
     "minecraft:iron_ingot",
     "",
@@ -15,12 +17,27 @@ export const DiscItem = (props) => {
     "",
   ]);
   const [trackFile, setTrackFile] = useState(null);
+  const [discImage, setDiscImage] = useState(null);
+
+  useEffect(() => {
+    onCollect(
+      crypto.randomUUID(),
+      {
+        title,
+        author,
+        recipe,
+        recipeIsShapeless,
+        trackFile,
+        discImage
+      }
+    )
+  }, [signal])
 
   return (
     <div class="flew-row flex w-full justify-between gap-4 rounded-xl bg-card-bg p-4">
       <div class="flex flex-row gap-12">
         <div class="">
-          <UploadBox uploadMessage={"Upload Disc Sprite"} size="small" />
+          <UploadBox uploadMessage={"Upload Disc Sprite"} size="small" onFileUpload={setDiscImage}/>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -31,6 +48,7 @@ export const DiscItem = (props) => {
                 class="mx-2 outline-none"
                 type="text"
                 placeholder="Enter song title"
+                onChange={(e) => setTitle(e.target.value)}
               ></input>
             </div>
           </div>
@@ -42,6 +60,7 @@ export const DiscItem = (props) => {
                 class="mx-2 outline-none"
                 type="text"
                 placeholder="Enter author name"
+                onChange={(e) => setAuthor(e.target.value)}
               ></input>
             </div>
           </div>
@@ -91,7 +110,7 @@ export const DiscItem = (props) => {
       <div class="flex items-end">
         <div
           class="cursor-pointer rounded-full bg-bad px-4 py-2 hover:bg-bad-hover transition-all duration-300 ease-in-out"
-          onClick={() => props.remove(props.index)}
+          onClick={() => onRemove(index)}
         >
           Delete
         </div>

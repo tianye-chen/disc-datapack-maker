@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-export const UploadBox = ({ uploadMessage, size }) => {
+export const UploadBox = ({ uploadMessage, size, onFileUpload }) => {
   const fileInput = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const [file, setFile] = useState(null);
@@ -36,6 +36,9 @@ export const UploadBox = ({ uploadMessage, size }) => {
 
   const handleFiles = (file) => {
     setFile(file);
+    if (onFileUpload) {
+      onFileUpload(file);
+    }
   };
 
   // Triggers handleFileSelect when user clicks on the upload box
@@ -77,6 +80,7 @@ export const UploadBox = ({ uploadMessage, size }) => {
         type="file"
         onChange={handleFileSelect}
         class="hidden"
+        accept="image/*"
       />
     </div>
   );

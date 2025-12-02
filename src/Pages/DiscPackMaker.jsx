@@ -2,23 +2,20 @@ import { useEffect, useState } from "react"
 import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
 import { UploadBox } from "../Components/UploadBox"
+import { add } from "three/tsl"
 
 export const DiscPackMaker = () => {
-    const [selectedVersion, setSelectedVersion] = useState(1.21)
+    const [selectedVersion, setSelectedVersion] = useState("1.21 - 1.12.1")
+    const [collectionTrigger, setCollectionTrigger] = useState(0)
+    const [packImage, setPackImage] = useState(null)
+    const [packTitle, setPackTitle] = useState("")
+    const [packDesc, setPackDesc] = useState("")
+    const [nDiscs, setNDiscs] = useState(1)
     const [customDiscs, setCustomDiscs] = useState([])
     const datapackVersion = ["1.21 - 1.12.1", "1.20.5 - 1.20.6", "1.20.2 - 1.20.4", "1.20 - 1.20.1", "1.19.3 - 1.19.4", "1.19 - 1.19.2"]
 
     const addNewItem = () => {
-        const newItem = {
-            _id: crypto.randomUUID(),
-            image: null,
-            track: null,
-            title: "",
-            author: "",
-            recipe: ["", "minecraft:iron_ingot", "", "minecraft:iron_ingot", "minecraft:diamond", "minecraft:iron_ingot", "", "minecraft:iron_ingot", ""],
-        }
-
-        setCustomDiscs(prev => [...prev, newItem])
+        setCustomDiscs(prev => [...prev, 1])
     }
 
     const removeItem = (index) => {
@@ -31,6 +28,13 @@ export const DiscPackMaker = () => {
         setCustomDiscs(newDiscs)
     }
 
+    const handleCollect = (id, data) => {
+
+    }
+
+    const handleSubmit = () => {
+        setCollectionTrigger(prev => prev + 1)
+    }
 
     return (
         <div class='text-primary-text min-w-screen'>
@@ -52,11 +56,26 @@ export const DiscPackMaker = () => {
                             <UploadBox 
                                 uploadMessage={"Upload Pack Image"}
                                 size="big"
+                                onFileUpload={setPackImage}
                             />
                         </div>
                         <div>
-                            <div class="font-bold text-6xl mb-4">Data pack title</div>
-                            <div class="font-thin text-4xl">Data pack description</div>
+                            <div class="font-bold text-6xl mb-4">
+                                <input
+                                    class="bg-upload-bg rounded-lg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline"
+                                    type="text"
+                                    placeholder="Datapack Title"
+                                    onChange={(e) => setPackTitle(e.target.value)}
+                                ></input>
+                            </div>
+                            <div class="font-thin text-4xl">
+                                <input
+                                    class="bg-upload-bg rounded-lg w-full px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline"
+                                    type="text"
+                                    placeholder="Datapack Description"
+                                    onChange={(e) => setPackDesc(e.target.value)}
+                                ></input>
+                            </div>
                         </div>
                     </div>
 
@@ -66,13 +85,12 @@ export const DiscPackMaker = () => {
 
                         <div class="flex gap-4">
                             <button class="bg-primary px-4 py-2.5 rounded-full cursor-pointer" onClick={addNewItem}>
-                                    Add item
+                                    Add disc
                             </button>
                             <Dropdown 
                                     item={selectedVersion}
                                     setSelectedItem={setSelectedVersion}
                                     list={datapackVersion}
-                                    handleDiscImageUpload={handleDiscImageUpload}
                             />
                         </div>
                     </div>
@@ -80,14 +98,17 @@ export const DiscPackMaker = () => {
                     <div class='flex flex-col gap-4 mt-4 min-w-full'>
                         {customDiscs.map((data, index) => (
                             <DiscItem 
+                                signal={collectionTrigger}
                                 data={data}
                                 index={index}
-                                remove={removeItem}
+                                onRemove={removeItem}
+                                onCollect={handleCollect}
+                                handleDiscImageUpload={handleDiscImageUpload}
                             />
                         ))}
                     </div>
 
-                    <div class="flex justify-end items-end w-full">
+                    <div class="flex justify-end items-end w-full" onClick={handleSubmit}>
                         <div class="bg-primary px-4 py-2.5 my-4 rounded-full cursor-pointer">
                             Create Pack    
                         </div>                     

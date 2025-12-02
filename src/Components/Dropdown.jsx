@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-export const Dropdown = (props) => {
+export const Dropdown = ({item, list, setSelectedItem}) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onMenuClick = (listItem) => {
-    props.setSelectedItem(listItem);
+    setSelectedItem(listItem);
     setShowDropdown(false);
   };
 
@@ -19,7 +19,7 @@ export const Dropdown = (props) => {
       }}
     >
       <div class="cursor-pointer rounded-full bg-upload-bg px-4 py-2.5 text-primary-text transition-all duration-200 ease-in-out select-none hover:bg-primary">
-        Version: {props.item} <span class="text-[0.5rem]">▼</span>
+        Version: {item} <span class="text-[0.5rem]">▼</span>
       </div>
 
       <div
@@ -27,7 +27,7 @@ export const Dropdown = (props) => {
       >
         <div class="my-2.5 w-full"></div>
         <div class={`rounded-2xl bg-upload-bg px-3 py-2`}>
-          {props.list.map((listItem) => {
+          {list.map((listItem) => {
             return (
               <div
                 class="my-1 w-full cursor-pointer rounded-full bg-upload-bg px-4 py-2 text-nowrap text-primary-text transition-all duration-200 ease-in-out hover:bg-primary"
