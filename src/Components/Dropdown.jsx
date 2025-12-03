@@ -27,9 +27,10 @@ export const Dropdown = ({item, list, setSelectedItem}) => {
       >
         <div class="my-2.5 w-full"></div>
         <div class={`rounded-2xl bg-upload-bg px-3 py-2`}>
-          {list.map((listItem) => {
+          {list.map((listItem, index) => {
             return (
               <div
+                key={index}
                 class="my-1 w-full cursor-pointer rounded-full bg-upload-bg px-4 py-2 text-nowrap text-primary-text transition-all duration-200 ease-in-out hover:bg-primary"
                 onClick={() => onMenuClick(listItem)}
               >

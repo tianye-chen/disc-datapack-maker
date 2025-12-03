@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
 import { UploadBox } from "../Components/UploadBox"
-import { add } from "three/tsl"
 
 export const DiscPackMaker = () => {
     const [selectedVersion, setSelectedVersion] = useState("1.21 - 1.12.1")
@@ -10,31 +9,44 @@ export const DiscPackMaker = () => {
     const [packImage, setPackImage] = useState(null)
     const [packTitle, setPackTitle] = useState("")
     const [packDesc, setPackDesc] = useState("")
-    const [nDiscs, setNDiscs] = useState(1)
-    const [customDiscs, setCustomDiscs] = useState([])
+    const [customDiscs, setCustomDiscs] = useState([{id: crypto.randomUUID()}])
     const datapackVersion = ["1.21 - 1.12.1", "1.20.5 - 1.20.6", "1.20.2 - 1.20.4", "1.20 - 1.20.1", "1.19.3 - 1.19.4", "1.19 - 1.19.2"]
+    const isCreatingPack = useRef(false)
 
     const addNewItem = () => {
-        setCustomDiscs(prev => [...prev, 1])
+        setCustomDiscs(prev => [...prev, {id: crypto.randomUUID()}])
     }
 
-    const removeItem = (index) => {
-        setCustomDiscs(prev => prev.filter((v, i) => (i != index)))
-    }
-
-    const handleDiscImageUpload = (file, index) => {
-        const newDiscs = [...customDiscs]
-        newDiscs[index].image = file
-        setCustomDiscs(newDiscs)
+    const removeItem = (id) => {
+        setCustomDiscs(prev => prev.filter((item) => (item.id != id)))
     }
 
     const handleCollect = (id, data) => {
+        setCustomDiscs(prev => {
+            const newDiscs = [...prev]
+            const discIndex = newDiscs.findIndex((item) => item.id === id)
+            if (discIndex !== -1) {
+                newDiscs[discIndex] = {
+                    ...newDiscs[discIndex],
+                    ...data
+                }
+            }
 
+            return newDiscs
+        })
     }
 
     const handleSubmit = () => {
         setCollectionTrigger(prev => prev + 1)
+        isCreatingPack.current = true
     }
+
+    useEffect(() => {
+        if (isCreatingPack.current) {
+            console.log(customDiscs)
+            isCreatingPack.current = false
+        }
+    }, [customDiscs])
 
     return (
         <div class='text-primary-text min-w-screen'>
@@ -96,20 +108,19 @@ export const DiscPackMaker = () => {
                     </div>
 
                     <div class='flex flex-col gap-4 mt-4 min-w-full'>
-                        {customDiscs.map((data, index) => (
+                        {customDiscs.map((disc) => (
                             <DiscItem 
+                                key={disc.id}
+                                id={disc.id}
                                 signal={collectionTrigger}
-                                data={data}
-                                index={index}
                                 onRemove={removeItem}
                                 onCollect={handleCollect}
-                                handleDiscImageUpload={handleDiscImageUpload}
                             />
                         ))}
                     </div>
 
-                    <div class="flex justify-end items-end w-full" onClick={handleSubmit}>
-                        <div class="bg-primary px-4 py-2.5 my-4 rounded-full cursor-pointer">
+                    <div class="flex justify-end items-end w-full">
+                        <div class="bg-primary px-4 py-2.5 my-4 rounded-full cursor-pointer" onClick={handleSubmit}>
                             Create Pack    
                         </div>                     
                     </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export const DiscItem = ({id, signal, onCollect, onRemove}) => {
   const [recipeIsShapeless, setRecipeIsShapeless] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(id);
   const [author, setAuthor] = useState("");
   const [recipe, setRecipe] = useState([ 
     "",
@@ -19,9 +19,15 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
   const [trackFile, setTrackFile] = useState(null);
   const [discImage, setDiscImage] = useState(null);
 
+  const handleRecipeChange = (index, value) => {
+    const newRecipe = [...recipe];
+    newRecipe[index] = value;
+    setRecipe(newRecipe);
+  }
+
   useEffect(() => {
     onCollect(
-      crypto.randomUUID(),
+      id,
       {
         title,
         author,
@@ -47,7 +53,7 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
               <input
                 class="mx-2 outline-none"
                 type="text"
-                placeholder="Enter song title"
+                placeholder={id}
                 onChange={(e) => setTitle(e.target.value)}
               ></input>
             </div>
@@ -85,11 +91,7 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
                   class="w-full outline-none"
                   text="text"
                   placeholder={item}
-                  onChange={(e) => {
-                    let newRecipe = [...recipe];
-                    newRecipe[i] = e.target.value;
-                    setRecipe(newRecipe);
-                  }}
+                  onChange={(e) => {handleRecipeChange(i, e.target.value)}}
                 />
               </div>
             ))}
@@ -110,7 +112,7 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
       <div class="flex items-end">
         <div
           class="cursor-pointer rounded-full bg-bad px-4 py-2 hover:bg-bad-hover transition-all duration-300 ease-in-out"
-          onClick={() => onRemove(index)}
+          onClick={() => onRemove(id)}
         >
           Delete
         </div>
