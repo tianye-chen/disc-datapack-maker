@@ -6,7 +6,7 @@
   --color-primary: rgba(100, 100, 255);
 
   --color-upload-bg: rgba(77, 77, 77 ,1);
-  --color-upload-hover: rgba(45, 45, 45, 1);
+  --color-upload-hover: rgba(45, 45, 45, 0.55);
   --color-upload-border: rgba(150, 150, 150, 1);
   --color-upload-button-hover: rgba(120, 120, 255, 1);
 

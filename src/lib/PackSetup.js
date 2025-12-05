@@ -1,4 +1,5 @@
 export const createPack = (data) => {
+  console.log("Hello from createPack!")
   console.log(data)
 }
 

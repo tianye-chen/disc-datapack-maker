@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, version } from "react"
 import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
 import { UploadBox } from "../Components/UploadBox"
@@ -44,7 +44,13 @@ export const DiscPackMaker = () => {
 
     useEffect(() => {
         if (isCreatingPack.current) {
-            createPack(customDiscs)
+            createPack({
+                version: selectedVersion,
+                packTitle: packTitle,
+                packDesc: packDesc,
+                packImage: packImage,
+                discs: customDiscs
+            })
             isCreatingPack.current = false
         }
     }, [customDiscs])
