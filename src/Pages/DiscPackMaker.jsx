@@ -11,7 +11,7 @@ export const DiscPackMaker = () => {
     const [packTitle, setPackTitle] = useState("")
     const [packDesc, setPackDesc] = useState("")
     const [customDiscs, setCustomDiscs] = useState([{id: crypto.randomUUID()}])
-    const datapackVersion = ["1.21 - 1.12.1", "1.20.5 - 1.20.6", "1.20.2 - 1.20.4", "1.20 - 1.20.1", "1.19.3 - 1.19.4", "1.19 - 1.19.2"]
+    const datapackVersion = ["1.21 - 1.12.1", "1.21.4", "1.21.5", "1.20 - 1.20.1", "1.19.4", "1.19 - 1.19.2"]
     const isCreatingPack = useRef(false)
 
     const addNewItem = () => {
