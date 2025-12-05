@@ -47,9 +47,9 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
         </div>
 
         <div class="flex flex-col gap-2">
-          <div>
+          <div class="max-w-2/3">
             Title
-            <div class="mt-1 rounded-full bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline">
+            <div class="mt-1 overflow-hidden rounded-full bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline">
               <input
                 class="mx-2 outline-none"
                 type="text"
@@ -59,9 +59,9 @@ export const DiscItem = ({id, signal, onCollect, onRemove}) => {
             </div>
           </div>
 
-          <div>
+          <div class="max-w-2/3">
             Author
-            <div class="mt-1 rounded-full bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline">
+            <div class="mt-1 overflow-hidden rounded-full bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline">
               <input
                 class="mx-2 outline-none"
                 type="text"

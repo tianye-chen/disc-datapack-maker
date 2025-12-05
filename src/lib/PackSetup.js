@@ -1,8 +1,9 @@
-export const createPack = () => {
-
+export const createPack = (data) => {
+  console.log(data)
 }
 
-export const createMcMeta = (version, description) => {
+
+const createMcMeta = (version, description) => {
   return {
     pack: {
       pack_format: version,
@@ -10,9 +11,9 @@ export const createMcMeta = (version, description) => {
       description: description
     },
     overlays: {
-      entries:[
+      entries: [
         {
-          "formats": {"min": 34, "max":999999},
+          "formats": { "min": 34, "max": 999999 },
           "directory": "overlays"
         }
       ]
@@ -20,36 +21,34 @@ export const createMcMeta = (version, description) => {
   }
 }
 
-export const getDuration = async (audioFile) => {
+
+const getDuration = async (audioFile) => {
   return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(audioFile)
-      const audio = new Audio(url)
-      audio.addEventListener('loadedmetadata', () => {
-        URL.revokeObjectURL(url)
-        resolve(audio.duration)
-      })
-      audio.addEventListener('error', (e) => {
-        reject(e)
-        resolve(0)
-      })
-    }
+    const url = URL.createObjectURL(audioFile)
+    const audio = new Audio(url)
+    audio.addEventListener('loadedmetadata', () => {
+      URL.revokeObjectURL(url)
+      resolve(audio.duration)
+    })
+    audio.addEventListener('error', (e) => {
+      reject(e)
+      resolve(0)
+    })
+  }
   )
 }
 
-export const createDiscData = (audioFiles, images, titles, authors) => {
-  const discPromises = audioFiles.map(async (audio, index) => {
-      const title = titles[index] || "Unknown Title"
-      const author = authors[index] || "Unknown Artist"
 
-      return {
-        audio: audio,
-        length: Math.ceil(await getDuration(audio)),
-        image: images[index],
-        title: titles[index],
-      }
+const addDiscDuration = (data) => {
+  const discPromises = data.map(async (data, index) => {
+    return {
+      ...data,
+      length: Math.ceil(await getDuration(audio)),
     }
+  }
   )
 
-  const musicDiscs = Promise.all(discPromises)
-  return musicDiscs
+  const discs = Promise.all(discPromises)
+  return discs
 }
+

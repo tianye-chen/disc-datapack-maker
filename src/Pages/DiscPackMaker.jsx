@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
 import { UploadBox } from "../Components/UploadBox"
+import { createPack } from "../lib/PackSetup"
 
 export const DiscPackMaker = () => {
     const [selectedVersion, setSelectedVersion] = useState("1.21 - 1.12.1")
@@ -43,7 +44,7 @@ export const DiscPackMaker = () => {
 
     useEffect(() => {
         if (isCreatingPack.current) {
-            console.log(customDiscs)
+            createPack(customDiscs)
             isCreatingPack.current = false
         }
     }, [customDiscs])
