@@ -1,14 +1,37 @@
-import { overlay } from "three/tsl"
+import { FFmpeg } from "@ffmpeg/ffmpeg"
+import { fetchFile, toBlobURL } from "@ffmpeg/util"
+
+const ffmpegInstance = null
+
+const initFFmpeg = async () => {
+  if (ffmpegInstance) {
+    return ffmpegInstance
+  }
+
+  ffmpegInstance = new FFmpeg()
+
+  const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
+  await ffmpegInstance.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+  })
+
+  return ffmpegInstance
+}
+
 
 export const createPack = (data) => {
   console.log("Hello from createPack!")
   console.log(data)
 
   let projectFiles = {}
-  projectFiles["pack.mcmeta"] = {
-    type: "json",
-    content: createMcMeta(data.version, data.packDesc)
-  }
+  const mcmeta = JSON.stringify(createMcMeta(data.version, data.packDesc), null, 2)
+  generateDiscFiles(projectFiles, data.discs)
+
+  projectFiles["pack.mcmeta"] = mcmeta
+
+  console.log("Done")
+  console.log(projectFiles)
 }
 
 
@@ -52,6 +75,46 @@ const createMcMeta = (version, description) => {
   }
 }
 
+
+const generateDiscFiles = async (projectFiles, discData) => {
+  const modelPath = "assets/minecraft/models/item/"
+  const texturePath = "assets/minecraft/textures/item/"
+  const soundRecordsPath = "assets/minecraft/sounds/records/"
+  const soundJsonPath = "assets/minecraft/"
+  const jukeBoxSongPath = "data/custom/jukebox_song/"
+
+  const soundsJson = {}
+
+  for (const [index, disc] of discData.entries()) {
+    const discName = `${disc.title}_${index}`.toLowerCase().replace(/[^a-z0-9_]/g, "_")
+    const discOgg = await convertToOgg(disc.trackFile)
+
+    soundsJson[`music_disc.${discName}`] = {
+      "sounds": [
+        {
+          "name": `records/music_disc_${discName}`,
+          "stream": true
+        }
+      ]
+    }
+  }
+
+  projectFiles[soundJsonPath+"sounds.json"] = JSON.stringify(soundsJson, null, 2)
+}
+
+const convertToOgg = async (file) => {
+  if (file.type === "application/ogg") {
+    return new Uint8Array(await file.arrayBuffer())
+  }
+
+  const ffmpeg = await initFFmpeg()
+
+  await ffmpeg.writeFile("input.mp3", await fetchFile(file))
+  await ffmpeg.exec(["-i", "input.mp3", "-c:a", "libvorbis", "-q:a", "4", "output.ogg"])
+
+  const ogg = await ffmpeg.readFile("output.ogg")
+  return ogg
+}
 
 const getDuration = async (audioFile) => {
   return new Promise((resolve, reject) => {
