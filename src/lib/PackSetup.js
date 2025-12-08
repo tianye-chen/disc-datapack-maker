@@ -1,5 +1,7 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg"
 import { fetchFile, toBlobURL } from "@ffmpeg/util"
+import { saveAs } from "file-saver"
+import JSZip from "jszip"
 
 const ffmpegInstance = null
 
@@ -20,18 +22,36 @@ const initFFmpeg = async () => {
 }
 
 
-export const createPack = (data) => {
+export const createPack = async (data) => {
   console.log("Hello from createPack!")
   console.log(data)
 
   let projectFiles = {}
   const mcmeta = JSON.stringify(createMcMeta(data.version, data.packDesc), null, 2)
-  generateDiscFiles(projectFiles, data.discs)
 
+  await generateDiscFiles(projectFiles, data.discs)
   projectFiles["pack.mcmeta"] = mcmeta
+  projectFiles["pack.png"] = data.packImage
+
+  constructDownload(projectFiles)
 
   console.log("Done")
+}
+
+const constructDownload = (projectFiles) => {
   console.log(projectFiles)
+
+  const zip = new JSZip()
+
+  for (const [path, content] of Object.entries(projectFiles)){
+    console.log(path)
+    zip.file(path, content)
+  }
+
+  zip.generateAsync({type:"blob"})
+    .then((download) => {
+      saveAs(download, "music_pack.zip")
+    })
 }
 
 
