@@ -121,7 +121,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
     projectFiles[jukeBoxSongPath+`music_disc_${discName}.json`] = JSON.stringify({
       "comparator_output": 1,
       "description": discData.title + " - " + discData.author,
-      "length_in_seconds": getDuration(discOgg),
+      "length_in_seconds": Math.ceil(await getDuration(discOgg)),
       "sound_event": {
         "sound_id": `minecraft:music_disc.music_disc_${discName}`
       }
@@ -169,19 +169,5 @@ const getDuration = async (audioFile) => {
     })
   }
   )
-}
-
-
-const addDiscDuration = (data) => {
-  const discPromises = data.map(async (data, index) => {
-    return {
-      ...data,
-      length: Math.ceil(await getDuration(audio)),
-    }
-  }
-  )
-
-  const discs = Promise.all(discPromises)
-  return discs
 }
 
