@@ -117,6 +117,25 @@ const generateDiscFiles = async (projectFiles, discData) => {
         }
       ]
     }
+
+    projectFiles[jukeBoxSongPath+`music_disc_${discName}.json`] = JSON.stringify({
+      "comparator_output": 1,
+      "description": discData.title + " - " + discData.author,
+      "length_in_seconds": getDuration(discOgg),
+      "sound_event": {
+        "sound_id": `minecraft:music_disc.music_disc_${discName}`
+      }
+    })
+
+    projectFiles[modelPath+`music_disc_${discName}.json`] = JSON.stringify({
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": `item/music_disc_${discName}`
+      }
+    }, null, 2)
+
+    projectFiles[soundRecordsPath+`music_disc_${discName}.ogg`] = discOgg
+    projectFiles[texturePath+`music_disc_${discName}.png`] = discData.discImage
   }
 
   projectFiles[soundJsonPath+"sounds.json"] = JSON.stringify(soundsJson, null, 2)
