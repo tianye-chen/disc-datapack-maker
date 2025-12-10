@@ -114,6 +114,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, "_");
     const discOgg = await convertToOgg(disc.trackFile);
+    const recipeData = formatRecipe(disc.recipe)
 
     soundsJson[`music_disc.${discName}`] = {
       sounds: [
@@ -125,8 +126,19 @@ const generateDiscFiles = async (projectFiles, discData) => {
     };
 
     projectFiles[recipePath + `music_disc_${discName}.json`] = 
-      JSON.stringify({
-
+      JSON.stringify({ 
+        "type": disc.recipeIsShapeless ? "minecraft:crafting_shapeless" : "minecraft:crafting_shapeled",
+        "pattern": recipeData.pattern,
+        "key": recipeData.key,
+        "id": "minecraft:music_disc_11",
+        "count": 1,
+        "components": {
+          "minecraft:jukebox_playable": {
+            "song": `custom:music_disc_${discName}`
+          },
+          "minecraft:item_name": `"${disc.title}"`,
+          "minecraft:lore": [`"${disc.author}`]
+        }
       },
       null,
       2,
@@ -227,7 +239,7 @@ const formatRecipe = (recipeArr) => {
     }
   });
 
-  return { recipe: recipe, key: datapackKey };
+  return { pattern: recipe, key: datapackKey };
 };
 
 const getDuration = async (audioFile) => {
