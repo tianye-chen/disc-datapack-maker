@@ -115,6 +115,8 @@ const generateDiscFiles = async (projectFiles, discData) => {
       .replace(/[^a-z0-9_]/g, "_");
     const discOgg = await convertToOgg(disc.trackFile);
     const recipeData = formatRecipe(disc.recipe)
+    const overrides = []
+    const customModelId = 6700 + index
 
     soundsJson[`music_disc.${discName}`] = {
       sounds: [
@@ -125,19 +127,29 @@ const generateDiscFiles = async (projectFiles, discData) => {
       ],
     };
 
+    overrides.push({
+      "predicate": {
+        "custom_model_data": customModelId
+      },
+      "model": `item/music_disc_${discName}`
+    })
+
     projectFiles[recipePath + `music_disc_${discName}.json`] = 
       JSON.stringify({ 
         "type": disc.recipeIsShapeless ? "minecraft:crafting_shapeless" : "minecraft:crafting_shapeled",
         "pattern": recipeData.pattern,
         "key": recipeData.key,
-        "id": "minecraft:music_disc_11",
-        "count": 1,
-        "components": {
-          "minecraft:jukebox_playable": {
-            "song": `custom:music_disc_${discName}`
-          },
-          "minecraft:item_name": `"${disc.title}"`,
-          "minecraft:lore": [`"${disc.author}`]
+        "result": {
+          "id": "minecraft:music_disc_11",
+          "count": 1,
+          "components": {
+            "minecraft:jukebox_playable": {
+              "song": `custom:music_disc_${discName}`
+            },
+            "minecraft:custom_model_data": customModelId,
+            "minecraft:item_name": `"${disc.title}"`,
+            "minecraft:lore": [`"${disc.author}`]
+          }
         }
       },
       null,
@@ -169,6 +181,16 @@ const generateDiscFiles = async (projectFiles, discData) => {
       2,
     );
 
+    projectFiles[modelPath + "music_disc_11"] = JSON.stringify({
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "item/music_disc_11"
+      },
+      "overrides": overrides
+    },
+    null,
+    2,
+  )
     projectFiles[soundRecordsPath + `music_disc_${discName}.ogg`] = discOgg.ogg;
     projectFiles[texturePath + `music_disc_${discName}.png`] = disc.discImage;
   }
