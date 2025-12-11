@@ -25,7 +25,7 @@ export const DiscItem = ({ id, signal, onCollect, onRemove }) => {
 
     if (recipeIsDefault) {
       setRecipeIsDefault(false);
-      new recipe = ["", "", "", "", "", "", "", "", ""];
+      newRecipe = ["", "", "", "", "", "", "", "", ""];
     } else {
       newRecipe = [...recipe];
     }
