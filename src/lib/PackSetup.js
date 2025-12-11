@@ -3,7 +3,7 @@ import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
-const ffmpegInstance = null;
+let ffmpegInstance = null;
 
 const initFFmpeg = async () => {
   if (ffmpegInstance) {
@@ -12,7 +12,7 @@ const initFFmpeg = async () => {
 
   ffmpegInstance = new FFmpeg();
 
-  const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+  const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
   await ffmpegInstance.load({
     coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
     wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
@@ -52,7 +52,7 @@ const constructDownload = (projectFiles) => {
   }
 
   zip.generateAsync({ type: "blob" }).then((download) => {
-    saveAs(download, "music_pack.zip");
+    saveAs(download, `${data.packTitle}.zip`);
   });
 };
 
@@ -125,6 +125,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
           stream: true,
         },
       ],
+      "attenuation_distance": 16
     };
 
     overrides.push({
@@ -136,7 +137,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
 
     projectFiles[recipePath + `music_disc_${discName}.json`] = 
       JSON.stringify({ 
-        "type": disc.recipeIsShapeless ? "minecraft:crafting_shapeless" : "minecraft:crafting_shapeled",
+        "type": disc.recipeIsShapeless ? "minecraft:crafting_shapeless" : "minecraft:crafting_shaped",
         "pattern": recipeData.pattern,
         "key": recipeData.key,
         "result": {
@@ -147,8 +148,10 @@ const generateDiscFiles = async (projectFiles, discData) => {
               "song": `custom:music_disc_${discName}`
             },
             "minecraft:custom_model_data": customModelId,
-            "minecraft:item_name": `"${disc.title}"`,
-            "minecraft:lore": [`"${disc.author}`]
+            "minecraft:item_name": `{"text": "${disc.title} - ${disc.author}"}`,
+            "minecraft:lore": [
+              `{"text": "Custom Music Discs"}`
+            ]
           }
         }
       },
@@ -163,7 +166,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
           description: disc.title + " - " + disc.author,
           length_in_seconds: Math.ceil(discOgg.duration),
           sound_event: {
-            sound_id: `minecraft:music_disc.music_disc_${discName}`,
+            sound_id: `minecraft:music_disc.${discName}`,
           },
         },
         null,
@@ -181,7 +184,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
       2,
     );
 
-    projectFiles[modelPath + "music_disc_11"] = JSON.stringify({
+    projectFiles[modelPath + "music_disc_11.json"] = JSON.stringify({
       "parent": "item/generated",
       "textures": {
         "layer0": "item/music_disc_11"
@@ -203,24 +206,17 @@ const generateDiscFiles = async (projectFiles, discData) => {
 };
 
 const convertToOgg = async (file) => {
-  if (file.type === "application/ogg") {
-    const buffer = new Uint8Array(await file.arrayBuffer());
-    return {
-      ogg: buffer,
-      duration: await getDuration(file),
-    };
-  }
-
   const ffmpeg = await initFFmpeg();
 
-  await ffmpeg.writeFile("input.mp3", await fetchFile(file));
+  await ffmpeg.writeFile(file.name, await fetchFile(file));
   await ffmpeg.exec([
     "-i",
-    "input.mp3",
+    file.name,
     "-c:a",
     "libvorbis",
     "-q:a",
     "4",
+    "-ac", "1",
     "output.ogg",
   ]);
 
