@@ -21,12 +21,15 @@ export const DiscItem = ({ id, signal, onCollect, onRemove }) => {
   const [discImage, setDiscImage] = useState(null);
 
   const handleRecipeChange = (index, value) => {
+    let newRecipe
+
     if (recipeIsDefault) {
       setRecipeIsDefault(false);
-      setRecipe(["", "", "", "", "", "", "", "", ""]);
+      new recipe = ["", "", "", "", "", "", "", "", ""];
+    } else {
+      newRecipe = [...recipe];
     }
 
-    const newRecipe = [...recipe];
     newRecipe[index] = value;
     setRecipe(newRecipe);
   };
