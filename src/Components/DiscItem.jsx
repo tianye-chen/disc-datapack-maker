@@ -1,7 +1,7 @@
 import { UploadBox } from "./UploadBox";
 import { useEffect, useState } from "react";
 
-export const DiscItem = ({ id, signal, onCollect, onRemove }) => {
+export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   const [title, setTitle] = useState(id);
   const [author, setAuthor] = useState("");
   const [recipe, setRecipe] = useState([
@@ -97,8 +97,8 @@ export const DiscItem = ({ id, signal, onCollect, onRemove }) => {
         </div>
         <div class="grid w-full grid-cols-3 grid-rows-3 gap-x-2 gap-y-2">
           {recipe.map((item, i) => (
-            <div class="relative h-8 w-full">
-              <div class="group absolute grid h-8 min-w-full w-full place-items-center overflow-hidden rounded-lg border-outline bg-upload-bg px-2 text-xs outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:z-10 focus-within:w-42 focus-within:outline-white">
+            <div class="group relative h-8 w-full">
+              <div class="absolute grid h-8 min-w-full w-full place-items-center rounded-lg border-outline bg-upload-bg px-2 text-xs outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:z-10 focus-within:w-42 focus-within:outline-white">
                 <input
                   key={i}
                   class="w-full outline-none"
@@ -108,6 +108,13 @@ export const DiscItem = ({ id, signal, onCollect, onRemove }) => {
                     handleRecipeChange(i, e.target.value);
                   }}
                 />
+              </div>
+
+              
+              <div class='absolute bg-upload-bg outline-upload-border outline-1 z-10 translate-y-10 w-full rounded-lg opacity-0 pointer-events-none group-focus-within:opacity-100 group-focus-within:pointer-events-auto scale-74 group-focus-within:scale-100 transition-all duration-300 ease-in-out'>
+                <div class='w-full h-full hover:bg-upload-hover rounded-lg transition-all duration-300 ease-in-out px-1 py-1.5' onMouseDown={() => {console.log("ello")}}>
+
+                </div>
               </div>
             </div>
           ))}

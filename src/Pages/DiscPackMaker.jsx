@@ -3,16 +3,20 @@ import { DiscItem } from "../Components/DiscItem"
 import { Dropdown } from "../Components/Dropdown"
 import { UploadBox } from "../Components/UploadBox"
 import { createPack } from "../lib/PackSetup"
+import { MCData } from "../lib/Data"
 
 export const DiscPackMaker = () => {
-    const [selectedVersion, setSelectedVersion] = useState("1.21 - 1.12.1")
+    const [selectedVersion, setSelectedVersion] = useState("1.21-1.21.1")
     const [collectionTrigger, setCollectionTrigger] = useState(0)
     const [packImage, setPackImage] = useState(null)
     const [packTitle, setPackTitle] = useState("")
     const [packDesc, setPackDesc] = useState("")
     const [customDiscs, setCustomDiscs] = useState([{id: crypto.randomUUID()}])
-    const datapackVersion = ["1.21 - 1.12.1", "1.21.4", "1.21.5", "1.20 - 1.20.1", "1.19.4", "1.19 - 1.19.2"]
+    const datapackVersion = ["1.21-1.21.1", "1.21.5", "1.20-1.20.1", "1.19.4", "1.19-1.19.2"]
     const isCreatingPack = useRef(false)
+
+    const mcData = new MCData(selectedVersion)
+    mcData.init()
 
     const addNewItem = () => {
         setCustomDiscs(prev => [...prev, {id: crypto.randomUUID()}])

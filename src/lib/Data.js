@@ -1,9 +1,23 @@
-import minecraftData from 'minecraft-data'
-
 export class MCData{
-    constructor(mcVersion) {
-        this.mcData = minecraftData(mcVersion)
-        this.itemsArray = this.mcData.itemsArray
+    constructor(verRange) {
+        this.verRange = verRange.split('-')
+        this.itemsArray = []
+    }
+
+    async init(){
+        try {
+            console.log(this.verRange)
+
+            let res = await fetch(`/minecraft-data/${this.verRange[0]}/items.json`)
+            if (!res.headers.get("content-type")?.includes("application/json")){
+                res = await fetch(`/minecraft-data/${this.verRange[1]}/items.json`)
+            }
+
+            this.itemsArray = await res.json()
+        } catch (e){
+            console.log('Error loading mc-data')
+            console.log(e)
+        }
     }
 
     itemLookUp (typeAhead) {
@@ -27,3 +41,6 @@ export class MCData{
         return matches
     }
 }
+
+const mcData = new MCData('1.21.1')
+mcData.init()
