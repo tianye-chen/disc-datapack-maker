@@ -126,6 +126,7 @@ export const DiscPackMaker = () => {
                                 signal={collectionTrigger}
                                 onRemove={removeItem}
                                 onCollect={handleCollect}
+                                mcData={mcData}
                             />
                         ))}
                     </div>

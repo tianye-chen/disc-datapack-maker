@@ -6,8 +6,6 @@ export class MCData{
 
     async init(){
         try {
-            console.log(this.verRange)
-
             let res = await fetch(`/minecraft-data/${this.verRange[0]}/items.json`)
             if (!res.headers.get("content-type")?.includes("application/json")){
                 res = await fetch(`/minecraft-data/${this.verRange[1]}/items.json`)
@@ -24,19 +22,17 @@ export class MCData{
         const matches = []
         const MAX_MATCHES = 5
 
-        this.itemsArray.forEach((item) => {
+        for (const item of this.itemsArray){
             if (item.displayName.toLowerCase().startsWith(typeAhead)) {
-                const matchedItem = {
-                    name: item.displayName,
-                    idName: "minecraft:"+item.name
-                }
+                const matchedItem = item.name
 
                 matches.push(matchedItem)
-                if (matches.length > MAX_MATCHES) {
-                    return
-                }
             }
-        })
+
+            if (matches.length > MAX_MATCHES) {
+                break
+            }
+        }
 
         return matches
     }
