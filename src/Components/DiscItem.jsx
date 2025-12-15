@@ -19,17 +19,38 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   const [recipeIsDefault, setRecipeIsDefault] = useState(true);
   const [trackFile, setTrackFile] = useState(null);
   const [discImage, setDiscImage] = useState(null);
-  const [autoComplete, setAutoComplete] = useState([])
+  const [autoCompleteSuggestion, setAutoCompleteSuggestion] = useState([])
+  const [suggestionIndex, setSuggestionIndex] = useState(-1)
+
+  const handleSuggestionKeyDown = (e, i) => {
+    if (e.key == "ArrowUp") {
+      e.preventDefault()
+      setSuggestionIndex((prev) => (prev > 0 ? prev - 1 : prev))
+    }
+
+    else if (e.key == "ArrowDown") {
+      e.preventDefault()
+      setSuggestionIndex((prev) => (prev < autoCompleteSuggestion.length - 1 ?  prev + 1 : autoCompleteSuggestion.length - 1))
+    }
+
+    else if (e.key == "Enter"){
+      e.preventDefault()
+      handleRecipeChange(autoCompleteSuggestion[suggestionIndex], i)
+      setSuggestionIndex(-1)
+    } else {
+      setSuggestionIndex(-1)
+    }
+  }
 
   const handleSuggestFocus = (e, index) => {
     handleAutocomplete(recipe[index])
   }
 
   const handleAutocomplete = (query) => {
-    setAutoComplete(mcData.itemLookUp(query))
+    setAutoCompleteSuggestion(mcData.itemLookUp(query))
   }
 
-  const handleRecipeChange = (index, value) => {
+  const handleRecipeChange = (value, index) => {
     console.log(index, value)
     let newRecipe
 
@@ -117,21 +138,26 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
                   placeholder={item}
                   value={recipe[i]}
                   onChange={(e) => {
-                    handleRecipeChange(i, e.target.value);
+                    handleRecipeChange(e.target.value, i);
+                  }}
+                  onKeyDown={(e) => {
+                    handleSuggestionKeyDown(e, i)
                   }}
                 />
               </div>
 
-              
+              {
+              autoCompleteSuggestion.length > 0 ? 
               <div class='absolute bg-upload-bg outline-upload-border outline-1 z-10 translate-y-10 w-fit min-w-full rounded-lg opacity-0 pointer-events-none group-focus-within:opacity-100 group-focus-within:pointer-events-auto scale-74 group-focus-within:scale-100 transition-all duration-300 ease-in-out'>
                   {
-                    autoComplete.map((suggestion, j) => (
-                      <div div class='w-full h-full hover:bg-upload-hover rounded-lg transition-all duration-300 ease-in-out px-2 py-1.5 cursor-default' onMouseDown={() => {handleRecipeChange(i, suggestion)}} key={j}>
+                    autoCompleteSuggestion.map((suggestion, j) => (
+                      <div div class={`w-full h-full hover:bg-upload-hover rounded-lg transition-all duration-300 ease-in-out px-2 py-1.5 cursor-default ${suggestionIndex == j ? 'bg-upload-hover' : ''}`} onMouseDown={() => {handleRecipeChange(suggestion, i)}} key={j}>
                         {suggestion}
                       </div>
                     ))
                   }
-              </div>
+              </div> : ''
+              }
             </div>
           ))}
         </div>
