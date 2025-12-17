@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { MdArrowDropDown } from "react-icons/md";
 
-export const Dropdown = ({item, list, setSelectedItem}) => {
+export const Dropdown = ({ item, list, setSelectedItem }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onMenuClick = (listItem) => {
@@ -18,8 +19,9 @@ export const Dropdown = ({item, list, setSelectedItem}) => {
         setShowDropdown(false);
       }}
     >
-      <div class="cursor-pointer rounded-full bg-upload-bg px-4 py-2.5 text-primary-text transition-all duration-200 ease-in-out select-none hover:bg-primary">
-        Version: {item} <span class="text-[0.5rem]">▼</span>
+      <div class="relative cursor-pointer overflow-hidden rounded-full bg-upload-bg px-4 py-2.5 text-primary-text transition-all duration-200 ease-in-out select-none hover:bg-primary">
+        Version: {item}{" "}
+        <MdArrowDropDown class="inline -translate-y-[0.05rem] scale-175" />
       </div>
 
       <div

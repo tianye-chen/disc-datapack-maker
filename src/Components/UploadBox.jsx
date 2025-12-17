@@ -40,7 +40,6 @@ export const UploadBox = ({ uploadMessage, size, onFileUpload }) => {
       onFileUpload(file);
     }
   };
-
   // Triggers handleFileSelect when user clicks on the upload box
   const triggerFileSelect = () => {
     fileInput.current.click();

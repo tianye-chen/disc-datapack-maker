@@ -5,6 +5,7 @@ import JSZip from "jszip";
 
 let ffmpegInstance = null;
 
+// Initialize FFmpeg instance
 const initFFmpeg = async () => {
   if (ffmpegInstance) {
     return ffmpegInstance;
@@ -21,10 +22,12 @@ const initFFmpeg = async () => {
   return ffmpegInstance;
 };
 
-export const createPack = async (data) => {
-  console.log("Hello from createPack!");
-  console.log(data);
 
+// Core function called to create the datapack
+export const createPack = async (data) => {
+  data.updateStatus("Generating Pack")
+
+  try {
   let projectFiles = {};
   const mcmeta = JSON.stringify(
     createMcMeta(data.version, data.packDesc),
@@ -37,10 +40,19 @@ export const createPack = async (data) => {
   projectFiles["pack.png"] = data.packImage;
 
   constructDownload(projectFiles);
+  } catch (e) {
+    console.log(e)
+    if (e instanceof TypeError){
+      data.updateStatus("One or more inputs are either missing or malformed")
+    }
+    return
+  }
 
+  data.updateStatus("Download started")
   console.log("Done");
 };
 
+// Zips the files and download the datapack
 const constructDownload = (projectFiles) => {
   console.log(projectFiles);
 
@@ -56,6 +68,7 @@ const constructDownload = (projectFiles) => {
   });
 };
 
+// Make mcmeta based on version
 const createMcMeta = (version, description) => {
   let dataFormat = -1;
   let resourceFormat = -1;
@@ -99,13 +112,15 @@ const createMcMeta = (version, description) => {
   };
 };
 
+
+// Makes the majority of the datapack files
 const generateDiscFiles = async (projectFiles, discData) => {
   const modelPath = "assets/minecraft/models/item/";
   const texturePath = "assets/minecraft/textures/item/";
   const soundRecordsPath = "assets/minecraft/sounds/records/";
   const soundJsonPath = "assets/minecraft/";
   const jukeBoxSongPath = "data/custom/jukebox_song/";
-  const recipePath =  "data/custom/recipe/"
+  const recipePath = "data/custom/recipe/";
 
   const soundsJson = {};
 
@@ -114,9 +129,9 @@ const generateDiscFiles = async (projectFiles, discData) => {
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, "_");
     const discOgg = await convertToOgg(disc.trackFile);
-    const recipeData = formatRecipe(disc.recipe)
-    const overrides = []
-    const customModelId = 6700 + index
+    const recipeData = formatRecipe(disc.recipe);
+    const overrides = [];
+    const customModelId = 6700 + index;
 
     soundsJson[`music_disc.${discName}`] = {
       sounds: [
@@ -125,39 +140,39 @@ const generateDiscFiles = async (projectFiles, discData) => {
           stream: true,
         },
       ],
-      "attenuation_distance": 16
+      attenuation_distance: 16,
     };
 
     overrides.push({
-      "predicate": {
-        "custom_model_data": customModelId
+      predicate: {
+        custom_model_data: customModelId,
       },
-      "model": `item/music_disc_${discName}`
-    })
+      model: `item/music_disc_${discName}`,
+    });
 
-    projectFiles[recipePath + `music_disc_${discName}.json`] = 
-      JSON.stringify({ 
-        "type": disc.recipeIsShapeless ? "minecraft:crafting_shapeless" : "minecraft:crafting_shaped",
-        "pattern": recipeData.pattern,
-        "key": recipeData.key,
-        "result": {
-          "id": "minecraft:music_disc_11",
-          "count": 1,
-          "components": {
+    projectFiles[recipePath + `music_disc_${discName}.json`] = JSON.stringify(
+      {
+        type: disc.recipeIsShapeless
+          ? "minecraft:crafting_shapeless"
+          : "minecraft:crafting_shaped",
+        pattern: recipeData.pattern,
+        key: recipeData.key,
+        result: {
+          id: "minecraft:music_disc_11",
+          count: 1,
+          components: {
             "minecraft:jukebox_playable": {
-              "song": `custom:music_disc_${discName}`
+              song: `custom:music_disc_${discName}`,
             },
             "minecraft:custom_model_data": customModelId,
             "minecraft:item_name": `{"text": "${disc.title} - ${disc.author}"}`,
-            "minecraft:lore": [
-              `{"text": "Custom Music Discs"}`
-            ]
-          }
-        }
+            "minecraft:lore": [`{"text": "Custom Music Discs"}`],
+          },
+        },
       },
       null,
       2,
-    )
+    );
 
     projectFiles[jukeBoxSongPath + `music_disc_${discName}.json`] =
       JSON.stringify(
@@ -184,16 +199,17 @@ const generateDiscFiles = async (projectFiles, discData) => {
       2,
     );
 
-    projectFiles[modelPath + "music_disc_11.json"] = JSON.stringify({
-      "parent": "item/generated",
-      "textures": {
-        "layer0": "item/music_disc_11"
+    projectFiles[modelPath + "music_disc_11.json"] = JSON.stringify(
+      {
+        parent: "item/generated",
+        textures: {
+          layer0: "item/music_disc_11",
+        },
+        overrides: overrides,
       },
-      "overrides": overrides
-    },
-    null,
-    2,
-  )
+      null,
+      2,
+    );
     projectFiles[soundRecordsPath + `music_disc_${discName}.ogg`] = discOgg.ogg;
     projectFiles[texturePath + `music_disc_${discName}.png`] = disc.discImage;
   }
@@ -205,6 +221,8 @@ const generateDiscFiles = async (projectFiles, discData) => {
   );
 };
 
+
+// Converts a file into .ogg
 const convertToOgg = async (file) => {
   const ffmpeg = await initFFmpeg();
 
@@ -216,7 +234,8 @@ const convertToOgg = async (file) => {
     "libvorbis",
     "-q:a",
     "4",
-    "-ac", "1",
+    "-ac",
+    "1",
     "output.ogg",
   ]);
 
@@ -230,9 +249,11 @@ const convertToOgg = async (file) => {
   };
 };
 
+
+// Put recipe into correct format
 const formatRecipe = (recipeArr) => {
   const itemToKey = {};
-  const datapackKey = {}
+  const datapackKey = {};
   const recipe = ["", "", ""];
   const recipeKeys = ["j", "i", "h", "g", "f", "e", "d", "c", "b", "a"];
   let key = null;
@@ -243,7 +264,7 @@ const formatRecipe = (recipeArr) => {
       return;
     }
 
-    const isTag = item.startsWith("#")
+    const isTag = item.startsWith("#");
 
     if (!(item in itemToKey)) {
       key = recipeKeys.pop();
@@ -253,13 +274,15 @@ const formatRecipe = (recipeArr) => {
     recipe[Math.floor(index / 3)] += itemToKey[item];
 
     datapackKey[itemToKey[item]] = {
-      [isTag ? "tag" : "item"]: item
-    }
+      [isTag ? "tag" : "item"]: item,
+    };
   });
 
   return { pattern: recipe, key: datapackKey };
 };
 
+
+// Get the duration of an audio file in seconds
 const getDuration = async (audioFile) => {
   return new Promise((resolve) => {
     const url = URL.createObjectURL(audioFile);
