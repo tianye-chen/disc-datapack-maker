@@ -20,7 +20,7 @@ export const DiscPackMaker = () => {
     "1.19-1.19.2",
   ];
   const isCreatingPack = useRef(false);
-  const [downloadStatusMessage, setDownloadStatusMessage] = useState('Generating euagishduigahe')
+  const [downloadStatusMessage, setDownloadStatusMessage] = useState('')
 
 
   const mcData = new MCData(selectedVersion);
@@ -80,8 +80,8 @@ export const DiscPackMaker = () => {
 
       <div class="flex justify-center">
         <div class="flex w-2/3 flex-col items-start">
-          {/** Title and pack image */}
-          <div class="flex min-h-64 items-start justify-center">
+          {/** Title and pack image and description*/}
+          <div class="flex min-h-64 items-start min-w-full justify-center">
             <div
               class={`mr-4 aspect-square max-w-sm min-w-sm rounded-2xl bg-upload-bg`}
             >
@@ -94,7 +94,7 @@ export const DiscPackMaker = () => {
             <div>
               <div class="mb-4 text-6xl font-bold">
                 <input
-                  class="rounded-lg bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline"
+                  class="w-full rounded-lg bg-upload-bg px-2 py-1.5 outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:outline-outline"
                   type="text"
                   placeholder="Datapack Title"
                   onChange={(e) => setPackTitle(e.target.value)}
