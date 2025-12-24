@@ -1,5 +1,6 @@
 import { UploadBox } from "./UploadBox";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { FaDotCircle } from "react-icons/fa";
 
 export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   const [title, setTitle] = useState(id);
@@ -21,6 +22,43 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   const [discImage, setDiscImage] = useState(null);
   const [autoCompleteSuggestion, setAutoCompleteSuggestion] = useState([]);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
+  const [namespaceVisibility, setNamespaceVisibility] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const [namespace, setNameSpace] = useState([
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+    "minecraft",
+  ]);
+  const namespaceInputs = useRef([]);
+
+  const handleNamespaceVisibility = (index, state) => {
+    console.log(index, state);
+
+    setNamespaceVisibility((prev) =>
+      prev.map((item, i) => (i == index ? state : item)),
+    );
+
+    if (state) {
+      setTimeout(() => {
+        namespaceInputs.current[index]?.focus();
+      }, 0);
+    }
+  };
 
   const handleSuggestionKeyDown = (e, i) => {
     if (e.key == "ArrowUp") {
@@ -80,7 +118,6 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   return (
     <div class="flew-row flex w-full justify-between gap-4 rounded-xl bg-card-bg p-4">
       <div class="flex flex-row gap-4">
-
         {/** Disc image upload */}
         <div class="">
           <UploadBox
@@ -133,49 +170,75 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
         </div>
         <div class="grid w-full grid-cols-3 grid-rows-3 gap-x-2 gap-y-2">
           {recipe.map((item, i) => (
-            <div class="group relative h-8 w-full" key={i}>
+            <div class="relative h-8 w-full" key={i}>
               <div
-                class="absolute grid h-8 w-full min-w-full place-items-center rounded-lg border-outline bg-upload-bg px-2 text-xs outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:z-10 focus-within:w-42 focus-within:outline-white"
-                onFocus={(e) => handleSuggestFocus(e, i)}
+                class={`absolute z-10 flex h-8 w-full -translate-y-10 items-center rounded-lg bg-upload-bg p-2 ${namespaceVisibility[i] ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} border-outline outline-2 outline-white transition-all duration-300 ease-in-out`}
+                onBlur={(e) => handleNamespaceVisibility(i, false)}
               >
                 <input
                   key={i}
-                  class="w-full outline-none"
+                  ref={(el) => (namespaceInputs.current[i] = el)}
+                  class="z-10 w-full outline-none"
                   type="text"
-                  placeholder={item}
-                  value={recipe[i]}
-                  onChange={(e) => {
-                    handleRecipeChange(e.target.value, i);
-                  }}
-                  onKeyDown={(e) => {
-                    handleSuggestionKeyDown(e, i);
-                  }}
+                  placeholder={"minecraft"}
+                  value={namespace[i]}
                 />
               </div>
 
-              {autoCompleteSuggestion.length > 0 ? (
-                <div class="pointer-events-none absolute z-10 w-fit min-w-full translate-y-10 scale-74 rounded-lg bg-upload-bg opacity-0 outline-1 outline-upload-border transition-all duration-300 ease-in-out group-focus-within:pointer-events-auto group-focus-within:scale-100 group-focus-within:opacity-100">
-                  {autoCompleteSuggestion.map((suggestion, j) => (
-                    <div
-                      div
-                      class={`h-full w-full cursor-default rounded-lg px-2 py-1.5 transition-all duration-300 ease-in-out hover:bg-upload-hover ${suggestionIndex == j ? "bg-upload-hover" : ""}`}
-                      onMouseDown={() => {
-                        handleRecipeChange(suggestion, i);
-                      }}
-                      key={j}
-                    >
-                      {suggestion}
-                    </div>
-                  ))}
+              <div class="group">
+                <div
+                  class="absolute flex h-8 w-full min-w-full place-items-center rounded-lg border-outline bg-upload-bg pr-2 text-xs outline-2 outline-transparent transition-all duration-300 ease-in-out focus-within:z-10 focus-within:w-42 focus-within:outline-white"
+                  onFocus={(e) => handleSuggestFocus(e, i)}
+                >
+                  <div
+                    class="flex h-full items-center rounded-l-lg px-1.5 transition-all duration-300 ease-in-out hover:bg-upload-hover"
+                    onClick={(e) =>
+                      handleNamespaceVisibility(i, !namespaceVisibility[i])
+                    }
+                    title="Namespace"
+                  >
+                    <FaDotCircle class="opacity-25" />
+                  </div>
+
+                  <input
+                    key={i}
+                    class="w-full pl-1 outline-none"
+                    type="text"
+                    placeholder={item}
+                    value={recipe[i]}
+                    onChange={(e) => {
+                      handleRecipeChange(e.target.value, i);
+                    }}
+                    onKeyDown={(e) => {
+                      handleSuggestionKeyDown(e, i);
+                    }}
+                  />
                 </div>
-              ) : (
-                ""
-              )}
+
+                {autoCompleteSuggestion.length > 0 ? (
+                  <div class="pointer-events-none absolute z-10 w-fit min-w-full translate-y-10 scale-74 rounded-lg bg-upload-bg opacity-0 outline-1 outline-upload-border transition-all duration-300 ease-in-out group-focus-within:pointer-events-auto group-focus-within:scale-100 group-focus-within:opacity-100">
+                    {autoCompleteSuggestion.map((suggestion, j) => (
+                      <div
+                        div
+                        class={`h-full w-full cursor-default rounded-lg px-2 py-1.5 transition-all duration-300 ease-in-out hover:bg-upload-hover ${suggestionIndex == j ? "bg-upload-hover" : ""}`}
+                        onMouseDown={() => {
+                          handleRecipeChange(suggestion, i);
+                        }}
+                        key={j}
+                      >
+                        {suggestion}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           ))}
         </div>
       </div>
-      
+
       {/** Track upload */}
       <div class="flex max-w-2/5 flex-col justify-center">
         Track {"(mp3/ogg)"}
@@ -186,7 +249,7 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
           accept=".mp3, .ogg"
         ></input>
       </div>
-      
+
       {/** Delete button */}
       <div class="flex items-end">
         <div
