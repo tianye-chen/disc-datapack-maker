@@ -88,8 +88,13 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
     setAutoCompleteSuggestion(mcData.itemLookUp(query));
   };
 
+  const handleNamespaceChange = (value, index) => {
+    let newNamespace = [...namespace];
+    newNamespace[index] = value;
+    setNameSpace(newNamespace);
+  };
+
   const handleRecipeChange = (value, index) => {
-    console.log(index, value);
     let newRecipe;
 
     if (recipeIsDefault) {
@@ -105,10 +110,15 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   };
 
   useEffect(() => {
+    const fullRecipe = recipe.map((item, i) => {
+      if (item == "") return "";
+      return namespace[i] + ":" + item;
+    });
+
     onCollect(id, {
       title,
       author,
-      recipe,
+      fullRecipe,
       recipeIsShapeless,
       trackFile,
       discImage,
@@ -172,15 +182,18 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
           {recipe.map((item, i) => (
             <div class="relative h-8 w-full" key={i}>
               <div
-                class={`absolute z-10 flex h-8 w-full -translate-y-10 items-center rounded-lg bg-upload-bg p-2 ${namespaceVisibility[i] ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} border-outline outline-2 outline-white transition-all duration-300 ease-in-out`}
+                class={`absolute z-10 flex flex-col w-full h-fit -translate-y-10 rounded-lg bg-upload-bg ${namespaceVisibility[i] ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} border-outline outline-2 outline-white transition-all duration-300 ease-in-out`}
                 onBlur={(e) => handleNamespaceVisibility(i, false)}
               >
+                <div class='text-[0.70rem] bg-card-bg rounded-lg text-nowrap px-1.5 py-1'>
+                  Set namespace
+                </div>
                 <input
                   key={i}
                   ref={(el) => (namespaceInputs.current[i] = el)}
-                  class="z-10 w-full outline-none"
+                  class="z-10 w-full outline-none bg-upload-bg px-1.5 py-1 rounded-lg"
                   type="text"
-                  placeholder={"minecraft"}
+                  onChange={(e) => handleNamespaceChange(e.target.value, i)}
                   value={namespace[i]}
                 />
               </div>

@@ -13,8 +13,8 @@ export const DiscPackMaker = () => {
   const [packDesc, setPackDesc] = useState("");
   const [customDiscs, setCustomDiscs] = useState([{ id: crypto.randomUUID() }]);
   const datapackVersion = [
-    "1.21-1.21.1",
     "1.21.5",
+    "1.21-1.21.1",
     "1.20-1.20.1",
     "1.19.4",
     "1.19-1.19.2",

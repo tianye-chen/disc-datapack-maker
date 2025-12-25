@@ -25,6 +25,8 @@ const initFFmpeg = async () => {
 
 // Core function called to create the datapack
 export const createPack = async (data) => {
+  console.log(data)
+
   data.updateStatus("Generating Pack")
 
   try {
@@ -39,7 +41,7 @@ export const createPack = async (data) => {
   projectFiles["pack.mcmeta"] = mcmeta;
   projectFiles["pack.png"] = data.packImage;
 
-  constructDownload(projectFiles);
+  constructDownload(projectFiles, data.packTitle);
   } catch (e) {
     console.log(e)
     if (e instanceof TypeError){
@@ -53,8 +55,10 @@ export const createPack = async (data) => {
 };
 
 // Zips the files and download the datapack
-const constructDownload = (projectFiles) => {
-  console.log(projectFiles);
+const constructDownload = (projectFiles, packTitle) => {
+  if (!packTitle || packTitle.trim() == "") {
+    packTitle = "custom_discs";
+  }
 
   const zip = new JSZip();
 
@@ -64,7 +68,7 @@ const constructDownload = (projectFiles) => {
   }
 
   zip.generateAsync({ type: "blob" }).then((download) => {
-    saveAs(download, `${data.packTitle}.zip`);
+    saveAs(download, `${packTitle}.zip`);
   });
 };
 
@@ -74,7 +78,7 @@ const createMcMeta = (version, description) => {
   let resourceFormat = -1;
 
   switch (version) {
-    case "1.21 - 1.12.1":
+    case "1.21-1.21.1":
       dataFormat = 48;
       resourceFormat = 34;
       break;
@@ -86,7 +90,7 @@ const createMcMeta = (version, description) => {
       dataFormat = 71;
       resourceFormat = 55;
       break;
-    case "1.20 - 1.20.1":
+    case "1.20-1.20.1":
       dataFormat = 15;
       resourceFormat = 15;
       break;
@@ -94,7 +98,7 @@ const createMcMeta = (version, description) => {
       dataFormat = 12;
       resourceFormat = 13;
       break;
-    case "1.19 - 1.19.2":
+    case "1.19-1.19.2":
       dataFormat = 10;
       resourceFormat = 9;
       break;
@@ -107,7 +111,7 @@ const createMcMeta = (version, description) => {
         min_inclusive: Math.min(resourceFormat, dataFormat),
         max_inclusive: Math.max(resourceFormat, dataFormat),
       },
-      description: description,
+      description: description + "\nCreated with §eDaniel.ch/MC-Disc",
     },
   };
 };
@@ -129,7 +133,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, "_");
     const discOgg = await convertToOgg(disc.trackFile);
-    const recipeData = formatRecipe(disc.recipe);
+    const recipeData = formatRecipe(disc.fullRecipe);
     const overrides = [];
     const customModelId = 6700 + index;
 
