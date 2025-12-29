@@ -22,6 +22,7 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
   const [discImage, setDiscImage] = useState(null);
   const [autoCompleteSuggestion, setAutoCompleteSuggestion] = useState([]);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
+  const [volume, setVolume] = useState(100);
   const [namespaceVisibility, setNamespaceVisibility] = useState([
     false,
     false,
@@ -122,6 +123,7 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
       recipeIsShapeless,
       trackFile,
       discImage,
+      volume,
     });
   }, [signal]);
 
@@ -182,16 +184,17 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
           {recipe.map((item, i) => (
             <div class="relative h-8 w-full" key={i}>
               <div
-                class={`absolute z-10 flex flex-col w-full h-fit -translate-y-10 rounded-lg bg-upload-bg ${namespaceVisibility[i] ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} border-outline outline-2 outline-white transition-all duration-300 ease-in-out`}
+                class={`absolute z-10 flex h-fit w-full -translate-y-10 flex-col rounded-lg bg-upload-bg ${namespaceVisibility[i] ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} border-outline outline-2 outline-white transition-all duration-300 ease-in-out`}
                 onBlur={(e) => handleNamespaceVisibility(i, false)}
               >
-                <div class='text-[0.70rem] bg-card-bg rounded-lg text-nowrap px-1.5 py-1'>
+                <div class="rounded-lg bg-card-bg px-1.5 py-1 text-[0.70rem] text-nowrap">
                   Set namespace
                 </div>
                 <input
                   key={i}
                   ref={(el) => (namespaceInputs.current[i] = el)}
-                  class="z-10 w-full outline-none bg-upload-bg px-1.5 py-1 rounded-lg"
+                  tabIndex={-1}
+                  class="z-10 w-full rounded-lg bg-upload-bg px-1.5 py-1 outline-none"
                   type="text"
                   onChange={(e) => handleNamespaceChange(e.target.value, i)}
                   value={namespace[i]}
@@ -253,14 +256,30 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
       </div>
 
       {/** Track upload */}
-      <div class="flex max-w-2/5 flex-col justify-center">
-        Track {"(mp3/ogg)"}
-        <input
-          type="file"
-          onChange={(e) => setTrackFile(e.target.files[0])}
-          class="mt-2 w-full cursor-pointer rounded-full bg-upload-bg pr-2 transition-all duration-300 ease-in-out file:mr-4 file:w-fit file:cursor-pointer file:rounded-full file:bg-white file:px-4 file:py-2 file:text-black file:transition-all file:duration-300 file:ease-in-out hover:file:bg-upload-button-hover hover:file:text-white"
-          accept=".mp3, .ogg"
-        ></input>
+      <div class="flex max-w-2/5 flex-col justify-center gap-2">
+        <div class="flex flex-col">
+          Track {"(mp3/ogg)"}
+          <input
+            type="file"
+            onChange={(e) => setTrackFile(e.target.files[0])}
+            class="mt-2 w-xs max-w-xs cursor-pointer rounded-full bg-upload-bg pr-2 transition-all duration-300 ease-in-out file:mr-4 file:w-fit file:cursor-pointer file:rounded-full file:bg-white file:px-4 file:py-2 file:text-black file:transition-all file:duration-300 file:ease-in-out hover:file:bg-upload-button-hover hover:file:text-white"
+            accept=".mp3, .ogg"
+          ></input>
+        </div>
+        <div class="flex flex-col">
+          <label htmlFor="volume">Volume {volume}</label>
+          <input
+            type="range"
+            id="volume"
+            min="0"
+            max="100"
+            name="volume"
+            label="volume"
+            value={volume}
+            onChange={(e) => setVolume(e.target.value)}
+            class="w-full accent-primary"
+          />
+        </div>
       </div>
 
       {/** Delete button */}

@@ -22,35 +22,34 @@ const initFFmpeg = async () => {
   return ffmpegInstance;
 };
 
-
 // Core function called to create the datapack
 export const createPack = async (data) => {
-  console.log(data)
+  console.log(data);
 
-  data.updateStatus("Generating Pack")
+  data.updateStatus("Generating Pack");
 
   try {
-  let projectFiles = {};
-  const mcmeta = JSON.stringify(
-    createMcMeta(data.version, data.packDesc),
-    null,
-    2,
-  );
+    let projectFiles = {};
+    const mcmeta = JSON.stringify(
+      createMcMeta(data.version, data.packDesc),
+      null,
+      2,
+    );
 
-  await generateDiscFiles(projectFiles, data.discs);
-  projectFiles["pack.mcmeta"] = mcmeta;
-  projectFiles["pack.png"] = data.packImage;
+    await generateDiscFiles(projectFiles, data.discs, data.version);
+    projectFiles["pack.mcmeta"] = mcmeta;
+    projectFiles["pack.png"] = data.packImage;
 
-  constructDownload(projectFiles, data.packTitle);
+    constructDownload(projectFiles, data.packTitle);
   } catch (e) {
-    console.log(e)
-    if (e instanceof TypeError){
-      data.updateStatus("One or more inputs are either missing or malformed")
+    console.log(e);
+    if (e instanceof TypeError) {
+      data.updateStatus("One or more inputs are either missing or malformed");
     }
-    return
+    return;
   }
 
-  data.updateStatus("Download started")
+  data.updateStatus("Download started");
   console.log("Done");
 };
 
@@ -116,15 +115,18 @@ const createMcMeta = (version, description) => {
   };
 };
 
-
 // Makes the majority of the datapack files
-const generateDiscFiles = async (projectFiles, discData) => {
+const generateDiscFiles = async (projectFiles, discData, version) => {
   const modelPath = "assets/minecraft/models/item/";
+  const itemPath = "assets/minecraft/items/"; // For 1.21.5 item models
   const texturePath = "assets/minecraft/textures/item/";
   const soundRecordsPath = "assets/minecraft/sounds/records/";
   const soundJsonPath = "assets/minecraft/";
   const jukeBoxSongPath = "data/custom/jukebox_song/";
   const recipePath = "data/custom/recipe/";
+
+  const overrides = [];
+  const entries = [];
 
   const soundsJson = {};
 
@@ -132,11 +134,11 @@ const generateDiscFiles = async (projectFiles, discData) => {
     const discName = `${disc.title}_${index}`
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, "_");
-    const discOgg = await convertToOgg(disc.trackFile);
+    const discOgg = await convertToOgg(disc.trackFile, disc.volume);
     const recipeData = formatRecipe(disc.fullRecipe);
-    const overrides = [];
     const customModelId = 6700 + index;
 
+    // --- Create sound entry for disc ---
     soundsJson[`music_disc.${discName}`] = {
       sounds: [
         {
@@ -147,13 +149,25 @@ const generateDiscFiles = async (projectFiles, discData) => {
       attenuation_distance: 16,
     };
 
-    overrides.push({
-      predicate: {
-        custom_model_data: customModelId,
-      },
-      model: `item/music_disc_${discName}`,
-    });
+    // --- Model override logic ---
+    if (version == "1.21-1.21.1") {
+      overrides.push({
+        predicate: {
+          custom_model_data: customModelId,
+        },
+        model: `item/music_disc_${discName}`,
+      });
+    } else {
+      entries.push({
+        threshold: customModelId,
+        model: {
+          type: "model",
+          model: `item/music_disc_${discName}`,
+        },
+      });
+    }
 
+    // --- Create recipe ---
     projectFiles[recipePath + `music_disc_${discName}.json`] = JSON.stringify(
       {
         type: disc.recipeIsShapeless
@@ -165,12 +179,23 @@ const generateDiscFiles = async (projectFiles, discData) => {
           id: "minecraft:music_disc_11",
           count: 1,
           components: {
-            "minecraft:jukebox_playable": {
-              song: `custom:music_disc_${discName}`,
-            },
-            "minecraft:custom_model_data": customModelId,
-            "minecraft:item_name": `{"text": "${disc.title} - ${disc.author}"}`,
-            "minecraft:lore": [`{"text": "Custom Music Discs"}`],
+            "minecraft:jukebox_playable":
+              version == "1.21-1.21.1"
+                ? { song: `custom:music_disc_${discName}` }
+                : `custom:music_disc_${discName}`,
+            "minecraft:custom_model_data":
+              version == "1.21-1.21.1"
+                ? customModelId
+                : { floats: [customModelId] },
+            "minecraft:item_name":
+              version == "1.21-1.21.1"
+                ? { text: `${disc.title} - ${disc.author}` }
+                : `${disc.title} - ${disc.author}`,
+            "minecraft:lore": [
+              version == "1.21-1.21.1"
+                ? { text: "Custom Music Discs" }
+                : "Custom Music Discs",
+            ],
           },
         },
       },
@@ -178,11 +203,12 @@ const generateDiscFiles = async (projectFiles, discData) => {
       2,
     );
 
+    // --- Create jukebox song file ---
     projectFiles[jukeBoxSongPath + `music_disc_${discName}.json`] =
       JSON.stringify(
         {
           comparator_output: 1,
-          description: disc.title + " - " + disc.author,
+          description: { text: disc.title + " - " + disc.author },
           length_in_seconds: Math.ceil(discOgg.duration),
           sound_event: {
             sound_id: `minecraft:music_disc.${discName}`,
@@ -192,6 +218,7 @@ const generateDiscFiles = async (projectFiles, discData) => {
         2,
       );
 
+    // --- Create model and texture files ---
     projectFiles[modelPath + `music_disc_${discName}.json`] = JSON.stringify(
       {
         parent: "minecraft:item/generated",
@@ -203,6 +230,15 @@ const generateDiscFiles = async (projectFiles, discData) => {
       2,
     );
 
+    // Assets
+    projectFiles[soundRecordsPath + `music_disc_${discName}.ogg`] = discOgg.ogg;
+    projectFiles[texturePath + `music_disc_${discName}.png`] = disc.discImage;
+  }
+
+  if (version == "1.21-1.21.1") {
+    overrides.sort(
+      (a, b) => a.predicate.custom_model_data - b.predicate.custom_model_data,
+    );
     projectFiles[modelPath + "music_disc_11.json"] = JSON.stringify(
       {
         parent: "item/generated",
@@ -214,8 +250,23 @@ const generateDiscFiles = async (projectFiles, discData) => {
       null,
       2,
     );
-    projectFiles[soundRecordsPath + `music_disc_${discName}.ogg`] = discOgg.ogg;
-    projectFiles[texturePath + `music_disc_${discName}.png`] = disc.discImage;
+  } else {
+    entries.sort((a, b) => a.threshold - b.threshold);
+    projectFiles[itemPath + "music_disc_11.json"] = JSON.stringify(
+      {
+        model: {
+          type: "minecraft:range_dispatch",
+          property: "minecraft:custom_model_data",
+          entries: entries,
+          fallback: {
+            type: "minecraft:model",
+            model: "minecraft:item/music_disc_11",
+          },
+        },
+      },
+      null,
+      2,
+    );
   }
 
   projectFiles[soundJsonPath + "sounds.json"] = JSON.stringify(
@@ -225,22 +276,23 @@ const generateDiscFiles = async (projectFiles, discData) => {
   );
 };
 
-
 // Converts a file into .ogg
-const convertToOgg = async (file) => {
+const convertToOgg = async (file, volume) => {
   const ffmpeg = await initFFmpeg();
 
   await ffmpeg.writeFile(file.name, await fetchFile(file));
   await ffmpeg.exec([
-    "-i",
-    file.name,
-    "-c:a",
-    "libvorbis",
-    "-q:a",
-    "4",
-    "-ac",
-    "1",
-    "output.ogg",
+    "-i", // Input file
+    file.name, // Input file name
+    "-c:a", // Codec:Audio
+    "libvorbis", // Use libvorbis codec, standard for ogg
+    "-q:a", // Audio quality
+    "4", // Set quality to 4, ~128kbps (good quality, reasonable size)
+    "-ac", // Audio channels
+    "1", // Set to mono, allows audio distance fading to work properly
+    "-af", // Audio filter
+    `volume=${volume / 100}`, // Set volume based on user input
+    "output.ogg", // Output file name
   ]);
 
   const ogg = await ffmpeg.readFile("output.ogg");
@@ -253,9 +305,8 @@ const convertToOgg = async (file) => {
   };
 };
 
-
 // Put recipe into correct format
-const formatRecipe = (recipeArr) => {
+const formatRecipe = (recipeArr, version) => {
   const itemToKey = {};
   const datapackKey = {};
   const recipe = ["", "", ""];
@@ -277,14 +328,17 @@ const formatRecipe = (recipeArr) => {
 
     recipe[Math.floor(index / 3)] += itemToKey[item];
 
-    datapackKey[itemToKey[item]] = {
-      [isTag ? "tag" : "item"]: item,
-    };
+    if (version == "1.21-1.21.1") {
+      datapackKey[itemToKey[item]] = {
+        [isTag ? "tag" : "item"]: item,
+      };
+    } else {
+      datapackKey[itemToKey[item]] = item;
+    }
   });
 
   return { pattern: recipe, key: datapackKey };
 };
-
 
 // Get the duration of an audio file in seconds
 const getDuration = async (audioFile) => {

@@ -15,9 +15,6 @@ export const DiscPackMaker = () => {
   const datapackVersion = [
     "1.21.5",
     "1.21-1.21.1",
-    "1.20-1.20.1",
-    "1.19.4",
-    "1.19-1.19.2",
   ];
   const isCreatingPack = useRef(false);
   const [downloadStatusMessage, setDownloadStatusMessage] = useState('')
