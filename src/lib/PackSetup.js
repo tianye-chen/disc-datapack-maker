@@ -81,25 +81,13 @@ const createMcMeta = (version, description) => {
       dataFormat = 48;
       resourceFormat = 34;
       break;
-    case "1.21.4":
-      dataFormat = 61;
-      resourceFormat = 46;
-      break;
     case "1.21.5":
       dataFormat = 71;
       resourceFormat = 55;
       break;
-    case "1.20-1.20.1":
-      dataFormat = 15;
-      resourceFormat = 15;
-      break;
-    case "1.19.4":
-      dataFormat = 12;
-      resourceFormat = 13;
-      break;
-    case "1.19-1.19.2":
-      dataFormat = 10;
-      resourceFormat = 9;
+    default:
+      dataFormat = 71;
+      resourceFormat = 999;
       break;
   }
 
@@ -110,7 +98,7 @@ const createMcMeta = (version, description) => {
         min_inclusive: Math.min(resourceFormat, dataFormat),
         max_inclusive: Math.max(resourceFormat, dataFormat),
       },
-      description: description + "\nCreated with §eDaniel.ch/MC-Disc",
+      description: description + `${description.length > 0 ? "\n" : ""}Created with §edanielch.net/MC-Disc`,
     },
   };
 };

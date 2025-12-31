@@ -13,6 +13,7 @@ export const DiscPackMaker = () => {
   const [packDesc, setPackDesc] = useState("");
   const [customDiscs, setCustomDiscs] = useState([{ id: crypto.randomUUID() }]);
   const datapackVersion = [
+    "1.21.6-1.21.11",
     "1.21.5",
     "1.21-1.21.1",
   ];
@@ -150,6 +151,20 @@ export const DiscPackMaker = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="flex justify-center items-center w-full px-48 py-16 flex-col">
+        <div class="text-4xl font-bold mb-4">How to install</div>
+        <ul>
+          <li> <b>1.</b> Go to your downloads and find the generated zip file </li>
+          <li> <b>2.</b> In another file explorer window, go to <b>%appdata%</b>, then <b>.minecraft</b>, then <b>resourcepacks</b> </li>
+          <li> <b>3.</b> Copy the zip file into the <b>resourcepacks</b> folder </li>
+          <li> <b>4.</b> Go back to <b>.minecraft</b>, go to <b>saves</b>, then <b>YOUR_WORLD_NAME</b>, then <b>datapacks</b></li>
+          <li> <b>5.</b> Copy the same zip file into the <b>datapacks</b> folder </li>
+          <li> <b>6.</b> In Minecraft, go to <b>Options</b> &gt; <b>Resource Packs</b>, and enable the pack </li>
+          <li> <b>7.</b> Enjoy!</li>
+          <li> <b>Tip.</b> To easily get the music discs, type the command <b>/recipe give YOUR_NAME *</b> then go to a <b>crafting table</b>, and open <b>recipe book</b>, toggle <b>Show all recipes</b>, and <b>search for disc</b></li>
+        </ul>
       </div>
     </div>
   );
