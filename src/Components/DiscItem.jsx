@@ -147,7 +147,7 @@ export const DiscItem = ({ id, signal, onCollect, onRemove, mcData }) => {
               <input
                 class="w-full outline-none"
                 type="text"
-                placeholder={id}
+                placeholder={"Enter disc title"}
                 onChange={(e) => setTitle(e.target.value)}
               ></input>
             </div>

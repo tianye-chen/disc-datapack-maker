@@ -1,26 +1,8 @@
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { saveAs } from "file-saver";
+import { convertToOgg } from "./AudioProcessing.js";
 import JSZip from "jszip";
 
-let ffmpegInstance = null;
 
-// Initialize FFmpeg instance
-const initFFmpeg = async () => {
-  if (ffmpegInstance) {
-    return ffmpegInstance;
-  }
-
-  ffmpegInstance = new FFmpeg();
-
-  const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-  await ffmpegInstance.load({
-    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-  });
-
-  return ffmpegInstance;
-};
 
 // Core function called to create the datapack
 export const createPack = async (data) => {
@@ -87,7 +69,7 @@ const createMcMeta = (version, description) => {
       break;
     default:
       dataFormat = 71;
-      resourceFormat = 999;
+      resourceFormat = 99;
       break;
   }
 
@@ -98,7 +80,9 @@ const createMcMeta = (version, description) => {
         min_inclusive: Math.min(resourceFormat, dataFormat),
         max_inclusive: Math.max(resourceFormat, dataFormat),
       },
-      description: description + `${description.length > 0 ? "\n" : ""}Created with §edanielch.net/MC-Disc`,
+      description:
+        description +
+        `${description.length > 0 ? "\n" : ""}danielch.net/MC-Disc`,
     },
   };
 };
@@ -123,7 +107,7 @@ const generateDiscFiles = async (projectFiles, discData, version) => {
       .toLowerCase()
       .replace(/[^a-z0-9_]/g, "_");
     const discOgg = await convertToOgg(disc.trackFile, disc.volume);
-    const recipeData = formatRecipe(disc.fullRecipe);
+    const recipeData = formatRecipe(disc.fullRecipe, version);
     const customModelId = 6700 + index;
 
     // --- Create sound entry for disc ---
@@ -177,11 +161,11 @@ const generateDiscFiles = async (projectFiles, discData, version) => {
                 : { floats: [customModelId] },
             "minecraft:item_name":
               version == "1.21-1.21.1"
-                ? { text: `${disc.title} - ${disc.author}` }
+                ? JSON.stringify({ "text": `${disc.title} - ${disc.author}` })
                 : `${disc.title} - ${disc.author}`,
             "minecraft:lore": [
               version == "1.21-1.21.1"
-                ? { text: "Custom Music Discs" }
+                ? JSON.stringify({ "text": "Custom Music Discs" })
                 : "Custom Music Discs",
             ],
           },
@@ -264,35 +248,6 @@ const generateDiscFiles = async (projectFiles, discData, version) => {
   );
 };
 
-// Converts a file into .ogg
-const convertToOgg = async (file, volume) => {
-  const ffmpeg = await initFFmpeg();
-
-  await ffmpeg.writeFile(file.name, await fetchFile(file));
-  await ffmpeg.exec([
-    "-i", // Input file
-    file.name, // Input file name
-    "-c:a", // Codec:Audio
-    "libvorbis", // Use libvorbis codec, standard for ogg
-    "-q:a", // Audio quality
-    "4", // Set quality to 4, ~128kbps (good quality, reasonable size)
-    "-ac", // Audio channels
-    "1", // Set to mono, allows audio distance fading to work properly
-    "-af", // Audio filter
-    `volume=${volume / 100}`, // Set volume based on user input
-    "output.ogg", // Output file name
-  ]);
-
-  const ogg = await ffmpeg.readFile("output.ogg");
-  const blob = new Blob([ogg.buffer], { type: "audio/ogg" });
-  const duration = await getDuration(blob);
-
-  return {
-    ogg: ogg,
-    duration: duration,
-  };
-};
-
 // Put recipe into correct format
 const formatRecipe = (recipeArr, version) => {
   const itemToKey = {};
@@ -326,18 +281,4 @@ const formatRecipe = (recipeArr, version) => {
   });
 
   return { pattern: recipe, key: datapackKey };
-};
-
-// Get the duration of an audio file in seconds
-const getDuration = async (audioFile) => {
-  return new Promise((resolve) => {
-    const url = URL.createObjectURL(audioFile);
-    const audio = new Audio(url);
-
-    audio.onloadeddata = () => {
-      URL.revokeObjectURL(url);
-      resolve(audio.duration);
-    };
-    audio.onerror = () => resolve(0);
-  });
 };
