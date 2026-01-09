@@ -70,12 +70,7 @@ export const DiscPackMaker = () => {
   return (
     <div class="min-w-screen text-primary-text">
       <div class="mt-16 mb-8 flex flex-col items-center justify-center">
-        <div class="text-4xl font-bold flex">
-          <img src="/jukebox.png" width={48} height={48} class="mr-4"/> MC Disc
-        </div>
-        <div>
-          Custom Minecraft Music Disc Datapack Maker
-        </div>
+        <img src="/mcdisc_logo_light.png" width={600}/>
       </div>
       <div class="mb-4 flex items-center justify-center">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1951180234830251"
