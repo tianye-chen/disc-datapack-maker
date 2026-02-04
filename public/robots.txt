@@ -2,5 +2,5 @@
 User-agent: *
 Allow: /
 
-# Sitemap (update base URL when you deploy)
-Sitemap: https://mcdisc.app/sitemap.xml
+# Sitemap
+Sitemap: https://mcdisc.danielch.net/sitemap.xml
