@@ -68,21 +68,28 @@ export const DiscPackMaker = () => {
   }, [customDiscs]);
 
   return (
-    <div class="min-w-screen text-primary-text">
-      <div class="mt-16 mb-8 flex flex-col items-center justify-center">
-        <img src="/mcdisc_logo_light.png" width={600}/>
+    <main className="min-w-screen text-primary-text" role="main">
+      <div className="mt-16 mb-8 flex flex-col items-center justify-center">
+        <h1 className="sr-only">MC Disc – Minecraft Custom Music Disc Datapack Maker</h1>
+        <img
+          src="/mcdisc_logo_light.png"
+          width={600}
+          height={200}
+          alt="MC Disc – Create custom music disc datapacks for Minecraft"
+          fetchPriority="high"
+        />
       </div>
-      <div class="mb-4 flex items-center justify-center">
+      <div className="mb-4 flex items-center justify-center">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1951180234830251"
      crossorigin="anonymous"></script>
       </div>
 
-      <div class="flex justify-center">
-        <div class="flex w-2/3 flex-col items-start">
+      <div className="flex justify-center">
+        <div className="flex w-2/3 flex-col items-start">
           {/** Title and pack image and description*/}
-          <div class="flex min-h-64 items-start min-w-full justify-center">
+          <section className="flex min-h-64 items-start min-w-full justify-center" aria-label="Pack details">
             <div
-              class={`mr-4 aspect-square max-w-sm min-w-sm rounded-2xl bg-upload-bg`}
+              className={`mr-4 aspect-square max-w-sm min-w-sm rounded-2xl bg-upload-bg`}
             >
               <UploadBox
                 uploadMessage={"Upload Pack Image"}
@@ -108,15 +115,16 @@ export const DiscPackMaker = () => {
                 ></input>
               </div>
             </div>
-          </div>
+          </section>
 
           {/** Functionality Cluster */}
-          <div class="mt-4 flex w-full justify-between">
+          <section className="mt-4 flex w-full justify-between" aria-label="Add discs and select version">
             <div></div>
 
-            <div class="flex gap-4">
+            <div className="flex gap-4">
               <button
-                class="cursor-pointer rounded-full bg-primary px-4 py-2.5 transition-all duration-300 ease-in-out hover:bg-primary-hover"
+                type="button"
+                className="cursor-pointer rounded-full bg-primary px-4 py-2.5 transition-all duration-300 ease-in-out hover:bg-primary-hover"
                 onClick={addNewItem}
               >
                 Add Disc
@@ -127,9 +135,9 @@ export const DiscPackMaker = () => {
                 list={datapackVersion}
               />
             </div>
-          </div>
+          </section>
 
-          <div class="mt-4 flex min-w-full flex-col gap-4">
+          <div className="mt-4 flex min-w-full flex-col gap-4">
             {customDiscs.map((disc) => (
               <DiscItem
                 key={disc.id}
@@ -142,31 +150,32 @@ export const DiscPackMaker = () => {
             ))}
           </div>
 
-          <div class="flex w-full items-center justify-end gap-4">
+          <div className="flex w-full items-center justify-end gap-4">
 						{downloadStatusMessage}
-            <div
-              class="my-4 cursor-pointer rounded-full bg-primary px-4 py-2.5 transition-all duration-300 ease-in-out hover:bg-primary-hover"
+            <button
+              type="button"
+              className="my-4 cursor-pointer rounded-full bg-primary px-4 py-2.5 transition-all duration-300 ease-in-out hover:bg-primary-hover"
               onClick={handleSubmit}
             >
               Create Pack
-            </div>
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="flex justify-center items-center w-full px-48 py-16 flex-col">
-        <div class="text-4xl font-bold mb-4">How to install</div>
-        <ul>
-          <li> <b>1.</b> Go to your downloads and find the generated zip file </li>
-          <li> <b>2.</b> In another file explorer window, go to <b>%appdata%</b>, then <b>.minecraft</b>, then <b>resourcepacks</b> </li>
-          <li> <b>3.</b> Copy the zip file into the <b>resourcepacks</b> folder </li>
-          <li> <b>4.</b> Go back to <b>.minecraft</b>, go to <b>saves</b>, then <b>YOUR_WORLD_NAME</b>, then <b>datapacks</b></li>
-          <li> <b>5.</b> Copy the same zip file into the <b>datapacks</b> folder </li>
-          <li> <b>6.</b> In Minecraft, go to <b>Options</b> &gt; <b>Resource Packs</b>, and enable the pack </li>
-          <li> <b>7.</b> Enjoy!</li>
-          <li> <b>Tip.</b> To easily get the music discs, type the command <b>/recipe give YOUR_NAME *</b> then go to a <b>crafting table</b>, and open <b>recipe book</b>, toggle <b>Show all recipes</b>, and <b>search for disc</b></li>
-        </ul>
-      </div>
-    </div>
+      <section className="flex justify-center items-center w-full px-48 py-16 flex-col" aria-labelledby="how-to-install">
+        <h2 id="how-to-install" className="text-4xl font-bold mb-4">How to install</h2>
+        <ol className="list-decimal list-inside space-y-2">
+          <li>Go to your downloads and find the generated zip file.</li>
+          <li>In another file explorer window, go to <strong>%appdata%</strong>, then <strong>.minecraft</strong>, then <strong>resourcepacks</strong>.</li>
+          <li>Copy the zip file into the <strong>resourcepacks</strong> folder.</li>
+          <li>Go back to <strong>.minecraft</strong>, go to <strong>saves</strong>, then <strong>YOUR_WORLD_NAME</strong>, then <strong>datapacks</strong>.</li>
+          <li>Copy the same zip file into the <strong>datapacks</strong> folder.</li>
+          <li>In Minecraft, go to <strong>Options</strong> &gt; <strong>Resource Packs</strong>, and enable the pack.</li>
+          <li> <strong>7.</strong> Enjoy!</li>
+          <li> <strong>Tip.</strong> To easily get the music discs, type the command <strong>/recipe give YOUR_NAME *</strong> then go to a <strong>crafting table</strong>, and open <strong>recipe book</strong>, toggle <strong>Show all recipes</strong>, and <strong>search for disc</strong></li>
+        </ol>
+      </section>
+    </main>
   );
 };

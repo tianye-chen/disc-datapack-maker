@@ -1,6 +1,18 @@
-# React + Vite
+# MC Disc – Minecraft Custom Music Disc Datapack Maker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite app for creating custom music disc datapacks for Minecraft 1.21+.
+
+## SEO (before production deploy)
+
+Update the base URL from `https://mcdisc.app` to your real domain in:
+
+- **index.html** – `canonical`, `og:url`, `og:image`, `twitter:url`, `twitter:image`, and the JSON-LD `url`
+- **public/robots.txt** – `Sitemap:` URL
+- **public/sitemap.xml** – `<loc>` URL and optionally `<lastmod>`
+
+---
+
+_Original template notes:_ This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
 

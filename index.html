@@ -2,12 +2,73 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image" href="/jukebox.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MC Disc | Minecraft Custom Music Disc Datapack Maker</title>
+    <meta name="theme-color" content="#1a1a2e" />
+
+    <!-- Primary meta -->
+    <title>MC Disc | Free Minecraft Custom Music Disc Datapack Maker</title>
+    <meta name="description" content="Create custom music disc datapacks for Minecraft 1.21+. Upload your audio, add disc names and textures, and download a ready-to-use datapack. No coding required." />
+    <meta name="keywords" content="Minecraft custom music disc, Minecraft datapack maker, custom music disc datapack, Minecraft 1.21 datapack, jukebox disc, Minecraft music, datapack generator" />
+    <meta name="author" content="MC Disc" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical URL: replace with your production URL for duplicate-content protection -->
+    <link rel="canonical" href="https://mcdisc.app/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mcdisc.app/" />
+    <meta property="og:title" content="MC Disc | Free Minecraft Custom Music Disc Datapack Maker" />
+    <meta property="og:description" content="Create custom music disc datapacks for Minecraft 1.21+. Upload audio, add names and textures, download a ready-to-use datapack. No coding required." />
+    <meta property="og:image" content="https://mcdisc.app/mcdisc_logo_light.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="MC Disc" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://mcdisc.app/" />
+    <meta name="twitter:title" content="MC Disc | Free Minecraft Custom Music Disc Datapack Maker" />
+    <meta name="twitter:description" content="Create custom music disc datapacks for Minecraft 1.21+. Upload audio, add names and textures, download a ready-to-use datapack." />
+    <meta name="twitter:image" content="https://mcdisc.app/mcdisc_logo_light.png" />
+
+    <!-- Favicon and app icons -->
+    <link rel="icon" type="image/png" href="/jukebox.png" />
+    <link rel="apple-touch-icon" href="/jukebox.png" />
+    <!-- Preload key visual for faster LCP -->
+    <link rel="preload" href="/mcdisc_logo_light.png" as="image" />
+
+    <!-- Structured data for search (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MC Disc",
+      "alternateName": "Minecraft Custom Music Disc Datapack Maker",
+      "url": "https://mcdisc.app/",
+      "description": "Create custom music disc datapacks for Minecraft 1.21+. Upload your audio files, set disc names and textures, and download a ready-to-use datapack and resource pack. Supports Minecraft 1.21, 1.21.1, 1.21.5, and 1.21.6.",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": [
+        "Custom music disc datapack generator",
+        "Minecraft 1.21, 1.21.1, 1.21.5, 1.21.6 support",
+        "Upload custom audio and pack image",
+        "Download as single zip (datapack + resource pack)",
+        "No coding required"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main>
+        <h1>MC Disc – Minecraft Custom Music Disc Datapack Maker</h1>
+        <p>Create custom music disc datapacks for Minecraft 1.21+. Enable JavaScript to use the tool.</p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
