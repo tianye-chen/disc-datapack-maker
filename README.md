@@ -1,30 +1,33 @@
 # MC Disc – Minecraft Custom Music Disc Datapack Maker
 
-React + Vite app for creating custom music disc datapacks for Minecraft 1.21+.
+A free, browser-based tool for creating custom music disc datapacks for Minecraft 1.21+. Upload your audio files, customize disc names and textures, and download a ready-to-use datapack and resource pack in one zip file.
 
-## SEO (before production deploy)
+## Features
 
-Update the base URL from `https://mcdisc.app` to your real domain in:
+- 🎵 **Custom Music Discs** – Upload audio files and convert them into Minecraft music discs
+- 🎨 **Custom Textures** – Upload custom textures for each disc
+- 📦 **All-in-One Pack** – Generates both datapack and resource pack in a single zip
+- 🎮 **Multi-Version Support** – Compatible with Minecraft 1.21, 1.21.1, 1.21.5, and 1.21.6+
+- ⚡ **No Coding Required** – Simple, intuitive web interface
+- 🚀 **Client-Side Processing** – All audio processing happens in your browser (privacy-friendly)
 
-- **index.html** – `canonical`, `og:url`, `og:image`, `twitter:url`, `twitter:image`, and the JSON-LD `url`
-- **public/robots.txt** – `Sitemap:` URL
-- **public/sitemap.xml** – `<loc>` URL and optionally `<lastmod>`
+## Usage
 
----
+1. **Upload Pack Image** – Add a custom image for your datapack
+2. **Set Pack Details** – Enter a title and description for your datapack
+3. **Add Discs** – Click "Add Disc" to create new music discs
+   - Upload an audio file for each disc
+   - Set the disc name
+   - Optionally upload a custom texture
+   - Select which existing Minecraft disc to replace
+4. **Select Version** – Choose your target Minecraft version
+5. **Create Pack** – Click "Create Pack" to generate and download the zip file
 
-_Original template notes:_ This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Installation in Minecraft
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Download the generated zip file
+2. Copy it to both:
+   - `%appdata%/.minecraft/resourcepacks/`
+   - `%appdata%/.minecraft/saves/YOUR_WORLD_NAME/datapacks/`
+3. Enable the resource pack in Minecraft: **Options** → **Resource Packs**
+4. Get the discs: Use `/recipe give YOUR_NAME *` then search for "disc" in a crafting table's recipe book
