@@ -1,5 +1,7 @@
 # MC Disc – Minecraft Custom Music Disc Datapack Maker
 
+https://mcdisc.danielch.net/
+
 A free, browser-based tool for creating custom music disc datapacks for Minecraft 1.21+. Upload your audio files, customize disc names and textures, and download a ready-to-use datapack and resource pack in one zip file.
 
 ## Features
